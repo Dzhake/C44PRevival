@@ -26,10 +26,6 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="mod.conf" />
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;../../Mods/C44PRevival/C44PRevival.dll&quot; /h /y" />
   </Target>
