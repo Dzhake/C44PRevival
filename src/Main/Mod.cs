@@ -7,18 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 
-// The title of your mod, as displayed in menus
-[assembly: AssemblyTitle("Additional duck game modes")]
-
-// The author of the mod
-[assembly: AssemblyCompany("FaecTerr")]
-
-// The description of the mod
-[assembly: AssemblyDescription("Some new gamemods to make new maps")]
-
-// The mod's version
-[assembly: AssemblyVersion("1.0.0.0")]
-
 namespace DuckGame.C44P
 {
     public class C44P : Mod
@@ -44,11 +32,6 @@ namespace DuckGame.C44P
             return t;
         }
         static updater upd;
-        // The mod's priority; this property controls the load order of the mod.
-        public override Priority priority
-        {
-            get { return base.priority; }
-        }
 
         // This function is run before all mods are finished loading.
         protected override void OnPreInitialize()
