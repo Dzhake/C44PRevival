@@ -4,8 +4,6 @@ using System.IO;
 using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
 
 namespace DuckGame.C44P
 {
@@ -63,21 +61,12 @@ namespace DuckGame.C44P
         protected override void OnStart()
         {
             base.OnStart();
-			debug = NetworkDebugger.enabled;
-			if (debug)
-			{
-				Patch();
-				patched = true;
-			}
+			AutoPatchHandler.Patch();
 		}
 
-        private byte[] GetMD5Hash(byte[] sourceBytes)
-        {
-            return new MD5CryptoServiceProvider().ComputeHash(sourceBytes);
-        }
         void wait()
         {
-            while (Level.current == null || !(Level.current.ToString() == "DuckGame.TitleScreen") && !(Level.current.ToString() == "DuckGame.TeamSelect2"))
+            while (Level.current == null || Level.current.ToString() != "DuckGame.TitleScreen" && Level.current.ToString() != "DuckGame.TeamSelect2")
                 Thread.Sleep(200);
             upd = new updater();
             //AutoUpdatables.Add(upd);
@@ -89,23 +78,20 @@ namespace DuckGame.C44P
                 return false;
             }
             int iterations = (int)Math.Ceiling((double)first.Length / 8.0);
-            using (FileStream fs = first.OpenRead())
+            using FileStream fs = first.OpenRead();
+            using FileStream fs2 = second.OpenRead();
+            byte[] one = new byte[8];
+            byte[] two = new byte[8];
+            for (int i = 0; i < iterations; i++)
             {
-                using (FileStream fs2 = second.OpenRead())
+                fs.Read(one, 0, 8);
+                fs2.Read(two, 0, 8);
+                if (BitConverter.ToInt64(one, 0) != BitConverter.ToInt64(two, 0))
                 {
-                    byte[] one = new byte[8];
-                    byte[] two = new byte[8];
-                    for (int i = 0; i < iterations; i++)
-                    {
-                        fs.Read(one, 0, 8);
-                        fs2.Read(two, 0, 8);
-                        if (BitConverter.ToInt64(one, 0) != BitConverter.ToInt64(two, 0))
-                        {
-                            return false;
-                        }
-                    }
+                    return false;
                 }
             }
+
             return true;
         }
         private static void copyLevels()
@@ -139,31 +125,6 @@ namespace DuckGame.C44P
 				}
 			}
 		}
-		public static void Patch()
-        {
-            Assembly Harmony = Assembly.Load(File.ReadAllBytes(GetPath<C44P>("HarmonyLoader") + ".dll"));
-            if (Harmony != null)
-            {
-                try
-                {
-                    Type t = Harmony.GetType("HarmonyLoader.Loader"); 
-                    MethodInfo Patch = t.GetMethod("Patch", BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                    Patch.Invoke(null, new object[] { SGMI(typeof(TeamSelect2), "DefaultSettings"), SGMI(typeof(HarmonyPatches), "TeamSelect2DefaultSettings_Prefix"), null, null });
-                    Patch.Invoke(null, new object[] { SGMI(typeof(Duck), "Kill"), SGMI(typeof(HarmonyPatches), "DuckKill_Prefix"), null, null });
-                    Patch.Invoke(null, new object[] { SGMI(typeof(DuckNetwork), "CreateMatchSettingsInfoWindow"), null, SGMI(typeof(HarmonyPatches), "DuckNetworkCreateMatchSettingsInfoWindow_Postfix"), null }); 
-					if (debug) Patch.Invoke(null, new object[] { SGMI(typeof(DevConsole), "Update"), SGMI(typeof(SettingsInit), "Prefix"), null, null });
-				}
-                catch
-                {
-                    DevConsole.Log("Patching failed.", Color.Red, 2f, -1);
-                }
-            }
-        }
-        public static MethodInfo SGMI(Type type, string Methodname)
-        {
-            MethodInfo method = type.GetMethod(Methodname, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-            return method;
-        }
 	}
 	internal static class SettingsInit
 	{
