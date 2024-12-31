@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using System;
 
 namespace DuckGame.C44P
 {
     class updater : IEngineUpdatable
     {
+        private static readonly string weaponsPath = "Sprites/Items/Weapons/";
         public SinWave _wave = 0.3f;
         public static RenderTarget2D _renderTarget;
         public static int Defender;
@@ -16,381 +17,43 @@ namespace DuckGame.C44P
             MonoMain.RegisterEngineUpdatable(this);
         }
 
-        public void PreUpdate()
+        public void PreUpdate() {}
+
+        public void Reskin(Type weaponType, string fileName, int frameWidth, int frameHeight)
         {
-            if (!C44P.patched)
+            foreach (Gun gun in Level.current.things[weaponType])
             {
-                C44P.Patch();
-                DuckNetwork.core.matchSettings = new List<MatchSetting>
-                {
-                    new MatchSetting
-                    {
-                        id = "requiredwins",
-                        name = "Required Wins",
-                        value = 15,
-                        min = 5,
-                        max = 100,
-                        step = 5,
-                        stepMap = new Dictionary<int, int>
-                        {
-                            {
-                                50,
-                                1
-                            },
-                            {
-                                100,
-                                10
-                            },
-                            {
-                                500,
-                                50
-                            },
-                            {
-                                1000,
-                                100
-                            }
-                        }
-                    },
-                    new MatchSetting
-                    {
-                        id = "restsevery",
-                        name = "Rests Every",
-                        value = 10,
-                        min = 0,
-                        max = 100,
-                        step = 5,
-                        stepMap = new Dictionary<int, int>
-                        {
-                            {
-                                50,
-                                1
-                            },
-                            {
-                                100,
-                                10
-                            },
-                            {
-                                500,
-                                50
-                            },
-                            {
-                                1000,
-                                100
-                            }
-                        }
-                    },
-                    new MatchSetting
-                    {
-                        id = "wallmode",
-                        name = "Wall Mode",
-                        value = false
-                    },
-                    new MatchSetting
-                    {
-                        id = "normalmaps",
-                        name = "@NORMALICON@|DGBLUE|Normal Levels",
-                        value = 0,
-                        suffix = "%",
-                        min = 0,
-                        max = 100,
-                        step = 5,
-                        percentageLinks = new List<string>
-                        {
-                            "randommaps",
-                            "custommaps",
-                            "workshopmaps"
-                        }
-                    },
-                    new MatchSetting
-                    {
-                        id = "randommaps",
-                        name = "@RANDOMICON@|DGBLUE|Random Levels",
-                        value = 0,
-                        suffix = "%",
-                        min = 0,
-                        max = 100,
-                        step = 5,
-                        percentageLinks = new List<string>
-                        {
-                            "normalmaps",
-                            "workshopmaps",
-                            "custommaps"
-                        }
-                    },
-                    new MatchSetting
-                    {
-                        id = "custommaps",
-                        name = "@CUSTOMICON@|DGBLUE|Custom Levels",
-                        value = 100,
-                        suffix = "%",
-                        min = 0,
-                        max = 100,
-                        step = 5,
-                        percentageLinks = new List<string>
-                        {
-                            "normalmaps",
-                            "randommaps",
-                            "workshopmaps"
-                        }
-                    },
-                    new MatchSetting
-                    {
-                        id = "workshopmaps",
-                        name = "@RAINBOWICON@|DGBLUE|Internet Levels",
-                        value = 0,
-                        suffix = "%",
-                        min = 0,
-                        max = 100,
-                        step = 5,
-                        percentageLinks = new List<string>
-                        {
-                            "normalmaps",
-                            "custommaps",
-                            "randommaps"
-                        }
-                    },
-                    new MatchSetting
-                    {
-                        id = "clientlevelsenabled",
-                        name = "Client Maps",
-                        value = false
-                    },
-                    new MatchSetting
-                    {
-                        id = "gamemode",
-                        name = "Mode",
-                        valueStrings = new List<string>(){ "VANILLA", "FUSE", "CAPTURE THE FLAG", "CONTROL POINT", "COLLECTIBLE", "THEFT" },
-                        value = 1,
-                        min = 0,
-                        max = 5,
-                        step = 1,
-                    }
-                };
-                C44P.patched = true;
+                if (gun is not { owner: Duck d }) continue;
+
+                if (d._equipment == null) continue;
+                string skin = "";
+                if (d.HasEquipment(typeof(Rainbow)))
+                    skin = "Rainbow";
+                if (d.HasEquipment(typeof(Carbon)))
+                    skin = "Carbon";
+                if (d.HasEquipment(typeof(Jungle)))
+                    skin = "Jungle";
+                if (d.HasEquipment(typeof(Aqua)))
+                    skin = "Aqua";
+
+                if (skin != "")
+                    gun.graphic = new SpriteMap(Mod.GetPath<C44P>($"{weaponsPath}{skin}{fileName}"), frameWidth, frameHeight);
             }
         }
 
         public void Update()
         {
-            string path = "Sprites/Items/Weapons/";
-            foreach (Thunderbuss gun in Level.current.things[typeof(Thunderbuss)])
-            {
-                string gunFileName = "/Newblunderbuss.png";
-                if (gun != null)
-                {
-                    foreach (Duck d in Level.current.things[typeof(Duck)])
-                    {
-                        if (d != null)
-                        {
-                            if (d._equipment != null && d.HasEquipment(typeof(Rainbow)) == true && d.holdObject == gun)
-                            {
-                                gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Rainbow" + gunFileName), 29, 10);
-                            }
-                            if (d._equipment != null && d.HasEquipment(typeof(Carbon)) == true && d.holdObject == gun)
-                            {
-                                gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Carbon" + gunFileName), 29, 10);
-                            }
-                            if (d._equipment != null && d.HasEquipment(typeof(Jungle)) == true && d.holdObject == gun)
-                            {
-                                gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Jungle" + gunFileName), 29, 10);
-                            }
-                            if (d._equipment != null && d.HasEquipment(typeof(Aqua)) == true && d.holdObject == gun)
-                            {
-                                gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Aqua" + gunFileName), 29, 10);
-                            }
-                        }
-                    }
-                }
-            }
-            foreach (MagnumOpus gun in Level.current.things[typeof(MagnumOpus)])
-            {
-                string gunFileName = "/Newmagnum.png";
-                if (gun != null)
-                {
-                    foreach (Duck d in Level.current.things[typeof(Duck)])
-                    {
-                        if (d != null)
-                        {
-                            if (d._equipment != null && d.HasEquipment(typeof(Rainbow)) == true && d.holdObject == gun)
-                            {
-                                gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Rainbow" + gunFileName), 32, 32);
-                            }
-                            if (d._equipment != null && d.HasEquipment(typeof(Carbon)) == true && d.holdObject == gun)
-                            {
-                                gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Carbon" + gunFileName), 32, 32);
-                            }
-                            if (d._equipment != null && d.HasEquipment(typeof(Jungle)) == true && d.holdObject == gun)
-                            {
-                                gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Jungle" + gunFileName), 32, 32);
-                            }
-                            if (d._equipment != null && d.HasEquipment(typeof(Aqua)) == true && d.holdObject == gun)
-                            {
-                                gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Aqua" + gunFileName), 32, 32);
-                            }
-                        }
-                    }
-                }
-            }
-            foreach (M16 gun in Level.current.things[typeof(M16)])
-            {
-                string gunFileName = "/m16.png";
-                foreach (Duck d in Level.current.things[typeof(Duck)])
-                {
-                    if (d != null)
-                    {
-                        if (d._equipment != null && d.HasEquipment(typeof(Rainbow)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Rainbow" + gunFileName), 32, 32);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Carbon)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Carbon" + gunFileName), 32, 32);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Jungle)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Jungle" + gunFileName), 32, 32);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Aqua)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Aqua" + gunFileName), 32, 32);
-                        }
-                    }
-                }
-            }
-            foreach (XM1014 gun in Level.current.things[typeof(XM1014)])
-            {
-                string gunFileName = "/xm1014.png";
-                foreach (Duck d in Level.current.things[typeof(Duck)])
-                {
-                    if (d != null)
-                    {
-                        if (d._equipment != null && d.HasEquipment(typeof(Rainbow)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Rainbow" + gunFileName), 32, 32);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Carbon)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Carbon" + gunFileName), 32, 32);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Jungle)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Jungle" + gunFileName), 32, 32);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Aqua)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Aqua" + gunFileName), 32, 32);
-                        }
-                    }
-                }
-            }
-            foreach (NewPistol gun in Level.current.things[typeof(NewPistol)])
-            {
-                string gunFileName = "/Newpistol.png";
-                foreach (Duck d in Level.current.things[typeof(Duck)])
-                {
-                    if (d != null)
-                    {
-                        if (d._equipment != null && d.HasEquipment(typeof(Rainbow)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Rainbow" + gunFileName), 32, 16);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Carbon)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Carbon" + gunFileName), 32, 16);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Jungle)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Jungle" + gunFileName), 32, 16);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Aqua)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Aqua" + gunFileName), 32, 16);
-                        }
-                    }
-                }
-            }
-            foreach (MP5 gun in Level.current.things[typeof(MP5)])
-            {
-                string gunFileName = "/Newsmg.png";
-                foreach (Duck d in Level.current.things[typeof(Duck)])
-                {
-                    if (d != null)
-                    {
-                        if (d._equipment != null && d.HasEquipment(typeof(Rainbow)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Rainbow" + gunFileName), 20, 10);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Carbon)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Carbon" + gunFileName), 20, 10);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Jungle)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Jungle" + gunFileName), 20, 10);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Aqua)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Aqua" + gunFileName), 20, 10);
-                        }
-                    }
-                }
-            }
-            foreach (OldVinchester gun in Level.current.things[typeof(OldVinchester)])
-            {
-                string gunFileName = "/Newoldpistol.png";
-                foreach (Duck d in Level.current.things[typeof(Duck)])
-                {
-                    if (d != null)
-                    {
-                        if (d._equipment != null && d.HasEquipment(typeof(Rainbow)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Rainbow" + gunFileName), 32, 32);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Carbon)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Carbon" + gunFileName), 32, 32);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Jungle)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Jungle" + gunFileName), 32, 32);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Aqua)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Aqua" + gunFileName), 32, 32);
-                        }
-                    }
-                }
-            }
-            foreach (SNAIPER gun in Level.current.things[typeof(SNAIPER)])
-            {
-                string gunFileName = "/awp.png";
-                foreach (Duck d in Level.current.things[typeof(Duck)])
-                {
-                    if (d != null)
-                    {
-                        if (d._equipment != null && d.HasEquipment(typeof(Rainbow)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Rainbow" + gunFileName), 40, 10);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Carbon)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Carbon" + gunFileName), 40, 10);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Jungle)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Jungle" + gunFileName), 40, 10);
-                        }
-                        if (d._equipment != null && d.HasEquipment(typeof(Aqua)) == true && d.holdObject == gun)
-                        {
-                            gun.graphic = new SpriteMap(Mod.GetPath<C44P>(path + "Aqua" + gunFileName), 40, 10);
-                        }
-                    }
-                }
-            }
+            Reskin(typeof(Thunderbuss), "/Newblunderbuss.png", 29, 10);
+            Reskin(typeof(MagnumOpus), "/Newmagnum.png", 32, 32);
+            Reskin(typeof(M16), "/m16.png", 32, 32);
+            Reskin(typeof(XM1014), "/xm1014.png", 32, 32);
+            Reskin(typeof(NewPistol), "Newpistol.png", 32, 16);
+            Reskin(typeof(MP5), "/Newsmg.png", 20, 10);
+            Reskin(typeof(OldVinchester), "/Newoldpistol.png", 32, 32);
+            Reskin(typeof(SNAIPER), "/awp.png", 40, 10);
         }
 
         private static int prevMode;
-        private static int playersCountPrev;
 
         public static List<LSItem> removedLevelsDM = new List<LSItem>();
         public static List<LSItem> removedLevelsFuse = new List<LSItem>();
@@ -807,16 +470,6 @@ namespace DuckGame.C44P
             }
         }
 
-        public void OnDrawLayer(Layer pLayer)
-        {
-        }
-
-        static IEnumerable<SpriteMap> getSprites(Holdable e)
-        {
-            if (e == null)
-                return null;
-            var ret = e.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Where(f => f.FieldType == typeof(SpriteMap)).Select<FieldInfo, SpriteMap>(fi => (SpriteMap)fi.GetValue(e));
-            return ret;
-        }
+        public void OnDrawLayer(Layer pLayer) {}
     }
 }

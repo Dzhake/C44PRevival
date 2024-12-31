@@ -37,14 +37,8 @@ namespace DuckGame.C44P
             base.OnPreInitialize();
             DevConsole.AddCommand(new CMD("teams", delegate ()
             {
-                for (int i = 0; i < Teams.active.Count; i++)
-                {
-                    DevConsole.Log(Teams.active[i].name);
-                }
-            }));
-            DevConsole.AddCommand(new CMD("setargA", delegate ()
-            {
-
+                foreach (Team t in Teams.active)
+                    DevConsole.Log(t.name);
             }));
         }
 
@@ -55,14 +49,14 @@ namespace DuckGame.C44P
             Thread tr = new Thread(wait);
             tr.Start();
             copyLevels();
-
         }
 
         protected override void OnStart()
         {
             base.OnStart();
 			AutoPatchHandler.Patch();
-		}
+            patched = true;
+        }
 
         void wait()
         {
