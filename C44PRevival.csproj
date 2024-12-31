@@ -32,6 +32,11 @@
   </Target>
 
   <ItemGroup>
+    <Compile Remove="src\Grenades\Flashbang.cs" />
+    <Compile Remove="src\Grenades\Flashlight.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="DuckGame">
       <HintPath>N:\Steam\steamapps\common\Duck Game\DuckGame.exe</HintPath>
     </Reference>
