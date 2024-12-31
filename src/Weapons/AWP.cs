@@ -3,7 +3,7 @@
 namespace DuckGame.C44P
 {
 	[EditorGroup("ADGM|Guns")]
-	public class SNAIPER : Gun
+	public class AWP : Gun
 	{
 		public StateBinding _loadStateBinding = new StateBinding("_loadState", -1, false, false);
 		public StateBinding _angleOffsetBinding = new StateBinding("_angleOffset", -1, false, false);
@@ -19,7 +19,7 @@ namespace DuckGame.C44P
 
 		public Vec2 prevBarrelPos = new Vec2(37f, 3f);
 
-		public SNAIPER(float xval, float yval) : base(xval, yval)
+		public AWP(float xval, float yval) : base(xval, yval)
 		{
 			ammo = 5;
 			_ammoType = new ATHighCalSniper();
