@@ -3,6 +3,10 @@
 	[EditorGroup("ADGM|Guns")]
 	public class NewPistol : Gun
 	{
+        protected string fileName = "Newpistol";
+        protected int frameWidth = 29;
+        protected int frameHeight = 10;
+
 		private SpriteMap _sprite;
 		public NewPistol(float xval, float yval) : base(xval, yval)
 		{
@@ -52,6 +56,7 @@
 				_sprite.SetAnimation("idle");
 			}
 			base.Update();
+            Util.TryReskin(this, fileName, frameWidth, frameHeight);
 		}
 
 		public override void OnPressAction()

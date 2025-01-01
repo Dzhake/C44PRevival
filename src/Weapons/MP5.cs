@@ -5,6 +5,10 @@ namespace DuckGame.C44P
     [EditorGroup("ADGM|Guns")]
     public class MP5 : Gun
     {
+        protected string fileName = "Newsmg";
+        protected int frameWidth = 20;
+        protected int frameHeight = 10;
+
 		int burst;
         public MP5(float xval, float yval) : base(xval, yval)
         {
@@ -30,14 +34,12 @@ namespace DuckGame.C44P
 			editorTooltip = "Semi-auto pistol which is better with short bursting";
 		}
 
-        public override void OnPressAction()
+        public override void Update()
         {
-            base.OnPressAction();
-		}
-        public override void OnHoldAction()
-        {
-            base.OnHoldAction();
+            base.Update();
+            Util.TryReskin(this, fileName, frameWidth, frameHeight);
         }
+
         public override void Fire()
         {
             base.Fire();

@@ -3,6 +3,10 @@
     [EditorGroup("ADGM|Guns")]
     public class M16 : Gun
     {
+        protected string fileName = "m16";
+        protected int frameWidth = 29;
+        protected int frameHeight = 10;
+
 		public M16(float xval, float yval) : base(xval, yval)
 		{
 			ammo = 20;
@@ -25,5 +29,11 @@
 
 			_holdOffset = new Vec2(0f, -1f);
 		}
-	}
+
+        public override void Update()
+        {
+            base.Update();
+            Util.TryReskin(this, fileName, frameWidth, frameHeight);
+        }
+    }
 }

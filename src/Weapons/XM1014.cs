@@ -3,9 +3,14 @@
 	[EditorGroup("ADGM|Guns")]
 	public class XM1014 : Gun
 	{
+        protected string fileName = "xm1014";
+        protected int frameWidth = 29;
+        protected int frameHeight = 10;
+
 		public XM1014(float xval, float yval) : base(xval, yval)
 		{
 			ammo = 7;
+			_fullAuto = true;
 			_ammoType = new ATShotgun();
 			wideBarrel = true;
 			_type = "gun";
@@ -25,6 +30,7 @@
 		public override void Update()
 		{
 			base.Update();
+            Util.TryReskin(this, fileName, frameWidth, frameHeight);
 		}
 
 		public override void OnPressAction()
@@ -35,12 +41,6 @@
 			}
 			base.OnPressAction();
 			return;
-		}
-
-		public override void Draw()
-		{
-			base.Draw();
-			Vec2 bOffset = new Vec2(13f, -2f);
 		}
 	}
 }

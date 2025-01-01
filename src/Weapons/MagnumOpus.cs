@@ -4,6 +4,10 @@
 	[BaggedProperty("isInDemo", true)]
 	public class MagnumOpus : Gun
 	{
+        protected string fileName = "Newmagnum";
+        protected int frameWidth = 32;
+        protected int frameHeight = 32;
+
 		public float rise;
 		public float _angleOffset;
 
@@ -38,6 +42,7 @@
 		public override void Update()
 		{
 			base.Update();
+            Util.TryReskin(this, fileName, frameWidth, frameHeight);
 			if (owner != null)
 			{
 				if (offDir < 0)

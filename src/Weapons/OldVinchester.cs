@@ -3,6 +3,10 @@
 	[EditorGroup("ADGM|Guns")]
 	public class OldVinchester : Gun
 	{
+        protected string fileName = "Newoldpistol";
+        protected int frameWidth = 32;
+        protected int frameHeight = 32;
+
 		public int _loadState = -1;
 		public float _angleOffset;
 
@@ -33,6 +37,7 @@
 		public override void Update()
 		{
 			base.Update();
+            Util.TryReskin(this, fileName, frameWidth, frameHeight);
 			if (ammo > 1)
 			{
 				_sprite.frame = 0;

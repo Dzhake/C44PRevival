@@ -34,6 +34,7 @@
   <ItemGroup>
     <Compile Remove="src\Grenades\Flashbang.cs" />
     <Compile Remove="src\Grenades\Flashlight.cs" />
+    <Compile Remove="src\Main\AutoUpdate.cs" />
   </ItemGroup>
 
   <ItemGroup>

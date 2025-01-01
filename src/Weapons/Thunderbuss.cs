@@ -3,6 +3,10 @@
 	[EditorGroup("ADGM|Guns")]
 	public class Thunderbuss : TampingWeapon
 	{
+        protected string fileName = "Newblunderbuss";
+        protected int frameWidth = 29;
+        protected int frameHeight = 10;
+
 		public Thunderbuss(float xval, float yval) : base(xval, yval)
 		{
 			wideBarrel = true;
@@ -29,19 +33,11 @@
 		}
 
 		public override void Update()
-		{
-			base.Update();
-			if (!_tamped)
-            {
-                _canRaise = false;
-				//_tampTime += 0.002f;
-            }
-            else
-            {
-				_canRaise = true;
-			}
-
-		}
+        {
+            base.Update();
+            Util.TryReskin(this, fileName, frameWidth, frameHeight);
+            _canRaise = _tamped;
+        }
 
 		public override void OnPressAction()
 		{

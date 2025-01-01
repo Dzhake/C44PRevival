@@ -72,7 +72,7 @@ namespace DuckGame.C44P
             {
                 if (rando % 2 == 0)
                 {
-                    contains = typeof(SNAIPER);
+                    contains = typeof(AWP);
                 }
                 else
                 {
@@ -101,7 +101,7 @@ namespace DuckGame.C44P
                         contains = typeof(MP5);
                         break;
                     case 2:
-                        contains = typeof(SNAIPER);
+                        contains = typeof(AWP);
                         break;
                     case 3:
                         contains = typeof(XM1014);
