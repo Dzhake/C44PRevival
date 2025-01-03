@@ -3,7 +3,7 @@
     [EditorGroup("ADGM|Guns")]
     public class M16 : Gun
     {
-        protected string fileName = "m16";
+        protected string fileName = "M16";
         protected int frameWidth = 29;
         protected int frameHeight = 10;
 
@@ -12,10 +12,10 @@
 			ammo = 20;
 			_ammoType = new ATHighCalMachinegun();
 			_type = "gun";
-			graphic = new Sprite(GetPath("Sprites/Items/Weapons/m16.png"), 0f, 0f);
-			center = new Vec2(16f, 15f);
-			collisionOffset = new Vec2(-8f, -3f);
-			collisionSize = new Vec2(18f, 10f);
+			_graphic = new Sprite(GetPath($"{C44P.WeaponsPath}{fileName}"));
+			_center = new Vec2(16f, 15f);
+			_collisionOffset = new Vec2(-8f, -3f);
+			_collisionSize = new Vec2(18f, 10f);
 			_barrelOffsetTL = new Vec2(32f, 14f);
 			_fireSound = "deepMachineGun2";
 			_fullAuto = true;

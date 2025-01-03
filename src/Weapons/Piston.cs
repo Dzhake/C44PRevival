@@ -1,38 +1,28 @@
 ﻿namespace DuckGame.C44P
 {
 	[EditorGroup("ADGM|Guns")]
-	public class NewPistol : Gun
+	public class Piston : Gun
 	{
-        protected string fileName = "Newpistol";
+        protected string fileName = "Piston";
         protected int frameWidth = 29;
         protected int frameHeight = 10;
 
 		private SpriteMap _sprite;
-		public NewPistol(float xval, float yval) : base(xval, yval)
+		public Piston(float xval, float yval) : base(xval, yval)
 		{
 			ammo = 9;
 			_ammoType = new AT9mm();
 			wideBarrel = true;
 			barrelInsertOffset = new Vec2(0f, -1f);
 			_type = "gun";
-			_sprite = new SpriteMap(GetPath("Sprites/Items/Weapons/Newpistol.png"), 32, 16, false);
+			_sprite = new SpriteMap(GetPath($"{C44P.WeaponsPath}{fileName}"), 32, 16);
 			_sprite.AddAnimation("idle", 1f, true, new int[1]);
-			_sprite.AddAnimation("fire", 0.8f, false, new int[]
-			{
-				1,
-				2,
-				2,
-				3,
-				3
-			});
-			_sprite.AddAnimation("empty", 1f, true, new int[]
-			{
-				2
-			});
-			graphic = _sprite;
-			center = new Vec2(11f, 6f);
-			collisionOffset = new Vec2(-8f, -3f);
-			collisionSize = new Vec2(16f, 9f);
+			_sprite.AddAnimation("fire", 0.8f, false, 1,2, 2, 3, 3);
+			_sprite.AddAnimation("empty", 1f, true, 2);
+			_graphic = _sprite;
+			_center = new Vec2(11f, 6f);
+			_collisionOffset = new Vec2(-8f, -3f);
+			_collisionSize = new Vec2(16f, 9f);
 			_barrelOffsetTL = new Vec2(18f, 2f);
 			_fireSound = "pistolFire";
 			_fireSoundPitch = -0.6f;
@@ -52,9 +42,7 @@
 		public override void Update()
 		{
 			if (_sprite.currentAnimation == "fire" && _sprite.finished)
-			{
 				_sprite.SetAnimation("idle");
-			}
 			base.Update();
             Util.TryReskin(this, fileName, frameWidth, frameHeight);
 		}
@@ -72,9 +60,7 @@
 				}
 			}
 			else
-			{
 				_sprite.SetAnimation("empty");
-			}
 			base.Fire();
 		}
 	}

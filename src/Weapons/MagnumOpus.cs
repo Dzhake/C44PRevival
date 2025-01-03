@@ -4,7 +4,7 @@
 	[BaggedProperty("isInDemo", true)]
 	public class MagnumOpus : Gun
 	{
-        protected string fileName = "Newmagnum";
+        protected string fileName = "MagnumOpus";
         protected int frameWidth = 32;
         protected int frameHeight = 32;
 
@@ -13,14 +13,14 @@
 
 		float burst;
 
-		public StateBinding _angleOffsetBinding = new StateBinding("_angleOffset", -1, false, false);
-		public StateBinding _riseBinding = new StateBinding("rise", -1, false, false);
+		public StateBinding _angleOffsetBinding = new("_angleOffset");
+		public StateBinding _riseBinding = new("rise");
 		public MagnumOpus(float xval, float yval) : base(xval, yval)
 		{
 			ammo = 6;
 			_ammoType = new ATMagnum();
 			_type = "gun";
-			graphic = new Sprite(GetPath("Sprites/Items/Weapons/Newmagnum.png"), 0f, 0f);
+			graphic = new Sprite(GetPath($"{C44P.WeaponsPath}{fileName}"), 0f, 0f);
 			center = new Vec2(16f, 16f);
 
 			collisionOffset = new Vec2(-8f, -6f);

@@ -3,7 +3,7 @@
 	[EditorGroup("ADGM|Guns")]
 	public class Thunderbuss : TampingWeapon
 	{
-        protected string fileName = "Newblunderbuss";
+        protected string fileName = "ThunderBass";
         protected int frameWidth = 29;
         protected int frameHeight = 10;
 
@@ -18,7 +18,7 @@
 			_numBulletsPerFire = 4;
 			_ammoType.penetration = 0.4f;
 			_type = "gun";
-			graphic = new Sprite(GetPath("Sprites/Items/Weapons/Newblunderbuss.png"), 0f, 0f);
+			graphic = new Sprite(GetPath($"{C44P.WeaponsPath}{fileName}.png"), 0f, 0f);
 			center = new Vec2(19f, 5f);
 			collisionOffset = new Vec2(-8f, -3f);
 			collisionSize = new Vec2(16f, 7f);

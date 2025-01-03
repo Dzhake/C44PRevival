@@ -5,7 +5,7 @@ namespace DuckGame.C44P
     [EditorGroup("ADGM|Guns")]
     public class MP5 : Gun
     {
-        protected string fileName = "Newsmg";
+        protected string fileName = "MP5";
         protected int frameWidth = 20;
         protected int frameHeight = 10;
 
@@ -17,10 +17,10 @@ namespace DuckGame.C44P
 			_ammoType.range = 170f;
 			_ammoType.accuracy = 0.9f;
 			_type = "gun";
-			graphic = new Sprite(GetPath("Sprites/Items/Weapons/Newsmg.png"), 0f, 0f);
-			center = new Vec2(10f, 5f);
-			collisionOffset = new Vec2(-8f, -4f);
-			collisionSize = new Vec2(16f, 8f);
+			_graphic = new Sprite(GetPath($"{C44P.WeaponsPath}{fileName}"));
+			_center = new Vec2(10f, 5f);
+			_collisionOffset = new Vec2(-8f, -4f);
+			_collisionSize = new Vec2(16f, 8f);
 			_barrelOffsetTL = new Vec2(9f, 2f);
 			_fireSound = "smg";
 			_fullAuto = true;
