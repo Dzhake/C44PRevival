@@ -37,15 +37,7 @@
 		public override void Update()
 		{
 			base.Update();
-            Util.TryReskin(this, fileName, frameWidth, frameHeight);
-			if (ammo > 1)
-			{
-				_sprite.frame = 0;
-			}
-			else
-			{
-				_sprite.frame = 1;
-			}
+			_sprite.frame = ammo > 1 ? 0 : 1;
 			if (!loaded && _loadState == -1)
 			{
 				_loadState = 0;

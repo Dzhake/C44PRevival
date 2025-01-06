@@ -2,7 +2,7 @@
 {
     public class C44P : Mod
     {
-        public static readonly string WeaponsPath = "Sprites/Items/Weapons/";
+        public static readonly string WeaponsPath = GetPath<C44P>("Sprites/Items/Weapons/");
 
         protected override void OnPostInitialize()
         {

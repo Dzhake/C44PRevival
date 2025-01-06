@@ -17,7 +17,7 @@ namespace DuckGame.C44P
 			_ammoType.range = 170f;
 			_ammoType.accuracy = 0.9f;
 			_type = "gun";
-			_graphic = new Sprite(GetPath($"{C44P.WeaponsPath}{fileName}"));
+			_graphic = new Sprite($"{C44P.WeaponsPath}{fileName}");
 			_center = new Vec2(10f, 5f);
 			_collisionOffset = new Vec2(-8f, -4f);
 			_collisionSize = new Vec2(16f, 8f);
@@ -33,12 +33,6 @@ namespace DuckGame.C44P
 			maxAccuracyLost = 0.7f;
 			editorTooltip = "Semi-auto pistol which is better with short bursting";
 		}
-
-        public override void Update()
-        {
-            base.Update();
-            Util.TryReskin(this, fileName, frameWidth, frameHeight);
-        }
 
         public override void Fire()
         {

@@ -5,10 +5,6 @@ namespace DuckGame.C44P;
 [EditorGroup("ADGM|Guns")]
 public class AWP : Sniper
 {
-    protected string fileName = "awp";
-    protected int frameWidth = 40;
-    protected int frameHeight = 10;
-
     public Vec2 normalBarrelOffsetTL = new(37f, 3f);
     public Vec2 shortBarrelOffsetTL = new(20f, 5f);
 
@@ -16,7 +12,7 @@ public class AWP : Sniper
     {
         ammo = 5;
         _ammoType = new ATHighCalSniper();
-        _graphic = new Sprite(GetPath($"{C44P.WeaponsPath}{fileName}"));
+        _graphic = new Sprite($"{C44P.WeaponsPath}awp");
         _center = new Vec2(16f, 4f);
         _collisionOffset = new Vec2(-8f, -4f);
         _collisionSize = new Vec2(16f, 8f);
@@ -25,7 +21,7 @@ public class AWP : Sniper
         _kickForce = 2f;
         _fireRumble = RumbleIntensity.Light;
         laserSight = true;
-        _laserOffsetTL = new Vec2(37f, 4f);
+        _laserOffsetTL = new Vec2(40f, 4f);
         _manualLoad = true;
 
         _holdOffset = new Vec2(2f, -2f);
@@ -37,7 +33,6 @@ public class AWP : Sniper
     public override void Update()
     {
         base.Update();
-        Util.TryReskin(this, fileName, frameWidth, frameHeight);
         if (!loaded || owner == null || _loadState != -1) return;
 
         Duck nearestTarget = null;
@@ -56,7 +51,7 @@ public class AWP : Sniper
 
         float aimAngle = (float)Math.Atan2(nearestTarget.position.y - barrelPosition.y, (nearestTarget.position.x - barrelPosition.x) * offDir);
         aimAngle *= offDir;
-        if (aimAngle < Math.PI * 0.05f && aimAngle > Math.PI * -0.05f)
+        if (aimAngle < Math.PI * 0.07f && aimAngle > Math.PI * -0.07f)
             angle = aimAngle * 0.8f;
     }
 

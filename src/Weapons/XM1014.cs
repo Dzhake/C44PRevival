@@ -14,7 +14,7 @@
 			_ammoType = new ATShotgun();
 			wideBarrel = true;
 			_type = "gun";
-			_graphic = new Sprite(GetPath($"{C44P.WeaponsPath}{fileName}"));
+			_graphic = new Sprite($"{C44P.WeaponsPath}{fileName}");
 			_center = new Vec2(16f, 16f);
 			_collisionOffset = new Vec2(-8f, -3f);
 			_collisionSize = new Vec2(16f, 6f);
@@ -26,12 +26,6 @@
             _fireWait = 3f;
 
 			_holdOffset = new Vec2(3f, 1f);
-		}
-
-		public override void Update()
-		{
-			base.Update();
-            Util.TryReskin(this, fileName, frameWidth, frameHeight);
 		}
 
         public override void OnPressAction()

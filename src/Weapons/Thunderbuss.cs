@@ -18,7 +18,7 @@
 			_numBulletsPerFire = 4;
 			_ammoType.penetration = 0.4f;
 			_type = "gun";
-			graphic = new Sprite(GetPath($"{C44P.WeaponsPath}{fileName}.png"), 0f, 0f);
+			graphic = new Sprite($"{C44P.WeaponsPath}{fileName}.png");
 			center = new Vec2(19f, 5f);
 			collisionOffset = new Vec2(-8f, -3f);
 			collisionSize = new Vec2(16f, 7f);
@@ -35,7 +35,6 @@
 		public override void Update()
         {
             base.Update();
-            Util.TryReskin(this, fileName, frameWidth, frameHeight);
             _canRaise = _tamped;
         }
 

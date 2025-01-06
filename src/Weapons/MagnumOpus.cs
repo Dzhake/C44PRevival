@@ -20,11 +20,11 @@
 			ammo = 6;
 			_ammoType = new ATMagnum();
 			_type = "gun";
-			graphic = new Sprite(GetPath($"{C44P.WeaponsPath}{fileName}"), 0f, 0f);
-			center = new Vec2(16f, 16f);
+			_graphic = new Sprite($"{C44P.WeaponsPath}{fileName}");
+			_center = new Vec2(16f, 16f);
 
-			collisionOffset = new Vec2(-8f, -6f);
-			collisionSize = new Vec2(16f, 10f);
+			_collisionOffset = new Vec2(-8f, -6f);
+			_collisionSize = new Vec2(16f, 10f);
 			_barrelOffsetTL = new Vec2(25f, 12f);
 
 			_fireSound = "magnum";
@@ -42,7 +42,6 @@
 		public override void Update()
 		{
 			base.Update();
-            Util.TryReskin(this, fileName, frameWidth, frameHeight);
 			if (owner != null)
 			{
 				if (offDir < 0)
