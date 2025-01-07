@@ -5,8 +5,9 @@ namespace DuckGame.C44P;
 [EditorGroup("ADGM|Guns")]
 public class Negev : Gun
 {
-    protected SpriteMap _sprite;
-    protected Sprite _tip;
+    protected Sprite _tipSprite;
+    protected SpriteMap _ammoTopSprite;
+    protected SpriteMap _ammoSprite;
     
     public Negev(float x, float y) : base(x, y)
     {
@@ -15,12 +16,11 @@ public class Negev : Gun
         wideBarrel = true;
         barrelInsertOffset = new Vec2(0f, 0f);
         _type = "gun";
-        _sprite = new SpriteMap($"{C44P.WeaponsPath}Negev", 34, 14)
-        {
-            _frame = 0
-        };
-        _tip = new Sprite($"{C44P.WeaponsPath}NegevTip");
-        _graphic = _sprite;
+        string rootSpritesPath = $"{C44P.WeaponsPath}Negev";
+        _tipSprite = new Sprite($"{rootSpritesPath}Tip");
+        _graphic = new Sprite(rootSpritesPath);
+        _ammoSprite = new SpriteMap($"{rootSpritesPath}Ammo", 3, 5);
+        _ammoTopSprite = new SpriteMap($"{rootSpritesPath}AmmoTop", 2, 1);
         _center = new Vec2(15f, 8f);
         _collisionOffset = new Vec2(-15f, -8f);
         _collisionSize = new Vec2(34f, 14f);
@@ -38,7 +38,7 @@ public class Negev : Gun
     public override void Update()
     {
         base.Update();
-        if (_wait <= 0f) _ammoType.accuracy = Maths.LerpTowards(_ammoType.accuracy, 0.1f, 0.01f);
+        if (!_triggerHeld) _ammoType.accuracy = Maths.LerpTowards(_ammoType.accuracy, 0.1f, 0.01f);
     }
 
     public override void Fire()
@@ -46,11 +46,11 @@ public class Negev : Gun
         if (_wait > 0f) return;
         base.Fire();
         if (ammo <= 0) return;
-
-        _sprite._frame = ammo switch
+        _ammoTopSprite.frame = 1 - _ammoTopSprite.frame;
+        _ammoSprite.frame = ammo switch
         {
-            <= 4 => 7 - ammo,
-            _ => 1 - _sprite._frame
+            <= 4 => 6 - ammo,
+            _ => 1 - _ammoSprite.frame
         };
         _ammoType.accuracy = Math.Min(_ammoType.accuracy + 0.05f, 0.8f);
         _weight = Math.Max(weight - 0.02f, 4.95f);
@@ -61,13 +61,27 @@ public class Negev : Gun
         Material mat = Graphics.material;
         base.Draw();
         Graphics.material = material;
-        _tip.flipH = graphic.flipH;
-        _tip.center = graphic.center;
-        _tip.depth = depth + 1;
-        DevConsole.Log(((_ammoType.accuracy - 0.1f) * 1.42f).ToString());
-        _tip.alpha = (_ammoType.accuracy - 0.1f) * 1.42f; // 10/7
-        _tip.angle = angle;
-        Graphics.Draw(_tip, x, y);
+        Depth tempDepth = depth + 1;
+
+        _tipSprite.flipH = graphic.flipH;
+        _tipSprite.center = graphic.center + new Vec2(-28, -3);
+        _tipSprite.depth = tempDepth;
+        _tipSprite.alpha = (_ammoType.accuracy - 0.1f) * 1.42f; // 10/7
+        _tipSprite.angle = angle;
+        Graphics.Draw(_tipSprite, x, y);
+
+        _ammoTopSprite.flipH = graphic.flipH;
+        _ammoTopSprite.center = graphic.center + new Vec2(-14, -4);
+        _ammoTopSprite.depth = tempDepth;
+        _ammoTopSprite.angle = angle;
+        Graphics.Draw(_ammoTopSprite, x, y);
+
+        _ammoSprite.flipH = graphic.flipH;
+        _ammoSprite.center = graphic.center + new Vec2(-14, -5);
+        _ammoSprite.depth = tempDepth;
+        _ammoSprite.angle = angle;
+        Graphics.Draw(_ammoSprite, x, y);
+
         Graphics.material = mat;
     }
 
