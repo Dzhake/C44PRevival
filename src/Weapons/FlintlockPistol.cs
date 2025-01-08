@@ -41,12 +41,7 @@
 			{
 				_loadState = 0;
 			}
-			if (infinite.value)
-			{
-				UpdateLoadState();
-				UpdateLoadState();
-				return;
-			}
+			if (infinite.value) UpdateLoadState();
 			UpdateLoadState(); 
 		}
 		private void UpdateLoadState()

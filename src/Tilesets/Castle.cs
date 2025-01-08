@@ -4,31 +4,12 @@ using System.Reflection;
 
 namespace DuckGame.C44P
 {
-    [EditorGroup("ADGM|Tiles|Desert")]
-    public class DesertCastleTileset : AutoBlock
-    {
-        public DesertCastleTileset(float xval, float yval) : base(xval, yval, GetPath<C44P>("Sprites/Tilesets/Castle/sandcastle.png"))
-        {
-            _editorName = "Sand Castle";
-            physicsMaterial = PhysicsMaterial.Metal;
-            verticalWidth = 10f;
-            verticalWidthThick = 15f;
-            horizontalHeight = 14f;
-        }
-    }
+    [EditorGroup("ADGM|Tiles|Sand")]
+    public class DesertCastleTileset(float x, float y) : SimpleTilesetBase(x, y, "Sand Castle", "Castle/sandcastle");
+
     [EditorGroup("ADGM|Tiles|Castle")]
-    public class BackgroundCastle : BackgroundTile
-    {
-        public BackgroundCastle(float xpos, float ypos) : base(xpos, ypos)
-        {
-            graphic = new SpriteMap(Mod.GetPath<C44P>("Sprites/Tilesets/Castle/castlePlus_background.png"), 16, 16, true);
-            _opacityFromGraphic = true;
-            center = new Vec2(8f, 8f);
-            collisionSize = new Vec2(16f, 16f);
-            collisionOffset = new Vec2(-8f, -8f);
-            _editorName = "BG Castle";
-        }
-    }
+    public class BackgroundCastle(float x, float y) : SimpleBackgroundBase(x, y, "BG Castle", "Castle/castlePlus_background");
+
     [EditorGroup("ADGM|Tiles|Castle")]
     public class CastleParallax : BackgroundUpdater
     {

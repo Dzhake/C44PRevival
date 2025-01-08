@@ -24,44 +24,16 @@
             horizontalHeight = 14f;
         }
     }
+
     [EditorGroup("ADGM|Tiles|Cyberduck 2084")]
-    public class CyberpunkTileset : AutoBlock
-    {
-        public CyberpunkTileset(float xval, float yval) : base(xval, yval, GetPath<C44P>("Sprites/Tilesets/Cyberpunk/cyberduck_2084_block.png"))
-        {
-            _editorName = "Cyber block";
-            physicsMaterial = PhysicsMaterial.Metal;
-            verticalWidth = 10f;
-            verticalWidthThick = 15f;
-            horizontalHeight = 14f;
-        }
-    }
+    public class CyberpunkTileset(float xval, float yval) : SimpleTilesetBase(xval, yval, "Cyber block", "Cyberpunk/cyberduck_2084_block");
+
     [EditorGroup("ADGM|Tiles|Cyberduck 2084")]
-    public class BackgroundCyber : BackgroundTile
-    {
-        public BackgroundCyber(float xpos, float ypos) : base(xpos, ypos)
-        {
-            graphic = new SpriteMap(Mod.GetPath<C44P>("Sprites/Tilesets/Cyberpunk/cyberduck_2084_background01.png"), 16, 16, true);
-            _opacityFromGraphic = true;
-            center = new Vec2(8f, 8f);
-            collisionSize = new Vec2(16f, 16f);
-            collisionOffset = new Vec2(-8f, -8f);
-            _editorName = "CP Lights";
-        }
-    }
+    public class BackgroundCyber(float x, float y) : SimpleBackgroundBase(x, y, "CP Lights", "Cyberpunk/cyberduck_2084_background01");
+
     [EditorGroup("ADGM|Tiles|Cyberduck 2084")]
-    public class BackgroundCyber2 : BackgroundTile
-    {
-        public BackgroundCyber2(float xpos, float ypos) : base(xpos, ypos)
-        {
-            graphic = new SpriteMap(Mod.GetPath<C44P>("Sprites/Tilesets/Cyberpunk/cyberduck_2084_background02.png"), 16, 16, true);
-            _opacityFromGraphic = true;
-            center = new Vec2(8f, 8f);
-            collisionSize = new Vec2(16f, 16f);
-            collisionOffset = new Vec2(-8f, -8f);
-            _editorName = "Cyber background";
-        }
-    }
+    public class BackgroundCyber2(float x, float y) : SimpleBackgroundBase(x, y, "Cyber background", "Cyberpunk/cyberduck_2084_background02");
+    
     [EditorGroup("ADGM|Tiles|Cyberduck 2084")]
     public class CyberParallax : BackgroundUpdater
     {
