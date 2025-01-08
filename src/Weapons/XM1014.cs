@@ -24,9 +24,9 @@
 			_fireRumble = RumbleIntensity.Light;
 			_numBulletsPerFire = 6;
             _fireWait = 3f;
-
 			_holdOffset = new Vec2(3f, 1f);
-		}
+            editorTooltip = "Very fast automatic shotgun. You can spam attack to shoot faster.";
+        }
 
         public override void OnPressAction()
         {

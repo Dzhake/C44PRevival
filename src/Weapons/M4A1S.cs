@@ -26,6 +26,7 @@ public class M4A1S : Gun
         maxAccuracyLost = 0.4f;
         _fireSoundPitch = 2f;
         _editorName = "M4A1-S";
+        editorTooltip = "Accurate and fast machine gun with low ammo count.";
     }
 
     protected override void PlayFireSound()

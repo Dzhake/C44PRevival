@@ -61,7 +61,7 @@ namespace DuckGame.C44P
             {                
                 if (rando % 2 == 0)
                 {
-                    contains = typeof(OldVinchester);
+                    contains = typeof(FlintlockPistol);
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace DuckGame.C44P
                 switch (rando) 
                 {
                     case 0:
-                        contains = typeof(OldVinchester);
+                        contains = typeof(FlintlockPistol);
                         break;
                     case 1:
                         contains = typeof(MP5);

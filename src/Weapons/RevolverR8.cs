@@ -13,11 +13,11 @@
 		public float rise;
 		public StateBinding riseBinding = new("rise");
         
-        protected int charge;
+        public int charge;
         public StateBinding chargeBinding = new("charge");
 
-        protected static readonly int chargeAt = 30;
-        protected bool shouldRise = true;
+        public static readonly int chargeAt = 30;
+        public bool shouldRise = true;
 
         public override float angle
         {
@@ -46,8 +46,9 @@
 			_kickForce = 5f;
 			_fireRumble = RumbleIntensity.Light;
 			_holdOffset = new Vec2(0, 1);
-			_editorName = nameof(RevolverR8);
-            _fireWait = 2.25f;
+			_editorName = "Revolver R8";
+            editorTooltip = "The R8 Revolver is highly accurate and powerful at the expense of a lengthy trigger-pull.";
+            _fireWait = 2.25f; //15 frames..?
         }
 
 		public override void Update()
