@@ -46,7 +46,7 @@ namespace DuckGame.C44P
             if (prevOwner != null)
             {
                 Duck prev = prevOwner as Duck;
-                if (prev.HasEquipment(typeof(CTEquipment)))
+                if (prev.HasEquipment(typeof(CTArmor)))
                 {
                     hSpeed = 0f;
                 }
@@ -89,7 +89,7 @@ namespace DuckGame.C44P
             if (owner != null)
             {
                 Duck d = owner as Duck;
-                if (d.HasEquipment(typeof(CTEquipment)))
+                if (d.HasEquipment(typeof(CTArmor)))
                 {
                     d.doThrow = true;
                     hSpeed *= 0f;
@@ -169,7 +169,7 @@ namespace DuckGame.C44P
                 {
                     ableToDefuse = false;
                     float defuseSpeed = 0;
-                    foreach (CTEquipment cte in Level.CheckRectAll<CTEquipment>(new Vec2(position.x - 10f, position.y + 2f), new Vec2(position.x + 10f, position.y - 6f)))
+                    foreach (CTArmor cte in Level.CheckRectAll<CTArmor>(new Vec2(position.x - 10f, position.y + 2f), new Vec2(position.x + 10f, position.y - 6f)))
                     {
                         if (cte.equippedDuck != null)
                         {

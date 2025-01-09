@@ -165,14 +165,14 @@ namespace DuckGame.C44P
 
                     int cteCount = 0;
                     int teCount = 0;
-                    foreach (CTEquipment cte in Level.current.things[typeof(CTEquipment)])
+                    foreach (CTArmor cte in Level.current.things[typeof(CTArmor)])
                     {
                         if (cte.equippedDuck != null && !cte.equippedDuck.dead)
                         {
                             cteCount++;
                         }
                     }
-                    foreach (TEquipment te in Level.current.things[typeof(TEquipment)])
+                    foreach (TArmor te in Level.current.things[typeof(TArmor)])
                     {
                         if (te.equippedDuck != null && !te.equippedDuck.dead)
                         {
@@ -250,7 +250,7 @@ namespace DuckGame.C44P
         }
         public void TerroristWin()
         {
-            foreach (CTEquipment cte in Level.current.things[typeof(CTEquipment)])
+            foreach (CTArmor cte in Level.current.things[typeof(CTArmor)])
             {
                 if (cte != null)
                 {
@@ -266,7 +266,7 @@ namespace DuckGame.C44P
                     }
                 }
             }
-            foreach (TEquipment te in Level.current.things[typeof(TEquipment)])
+            foreach (TArmor te in Level.current.things[typeof(TArmor)])
             {
                 if (te.duck != null && te.duck.team != null)
                 {
@@ -277,7 +277,7 @@ namespace DuckGame.C44P
         }
         public void CounterTerroristWin()
         {
-            foreach (TEquipment te in Level.current.things[typeof(TEquipment)])
+            foreach (TArmor te in Level.current.things[typeof(TArmor)])
             {
                 if (te != null)
                 {
@@ -293,7 +293,7 @@ namespace DuckGame.C44P
                     }
                 }
             }
-            foreach (CTEquipment cte in Level.current.things[typeof(CTEquipment)])
+            foreach (CTArmor cte in Level.current.things[typeof(CTArmor)])
             {
                 if (cte.duck != null && cte.duck.team != null)
                 {
@@ -336,11 +336,11 @@ namespace DuckGame.C44P
                 bool nonGM_C4 = false;
                 foreach (Equipper equipper in Level.current.things[typeof(Equipper)])
                 {
-                    if(equipper.GetContainedInstance() is CTEquipment)
+                    if(equipper.GetContainedInstance() is CTArmor)
                     {
                         condition1 = true;
                     }
-                    if (equipper.GetContainedInstance() is TEquipment)
+                    if (equipper.GetContainedInstance() is TArmor)
                     {
                         condition2 = true;
                     }

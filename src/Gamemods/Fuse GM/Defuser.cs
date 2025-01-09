@@ -23,7 +23,7 @@
                 if (owner != null)
                 {
                     Duck d = owner as Duck;
-                    if (!d.HasEquipment(typeof(CTEquipment)))
+                    if (!d.HasEquipment(typeof(CTArmor)))
                     {
                         d.doThrow = true;
                     }
@@ -31,7 +31,7 @@
                 if (prevOwner != null)
                 {
                     Duck d = prevOwner as Duck;
-                    if (!d.HasEquipment(typeof(CTEquipment)))
+                    if (!d.HasEquipment(typeof(CTArmor)))
                     {
                         hSpeed = 0f;
                     }

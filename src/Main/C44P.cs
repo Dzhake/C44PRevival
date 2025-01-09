@@ -6,7 +6,7 @@
         public static readonly string WeaponsPath = $"{SpritesPath}Items/Weapons/";
         public static readonly string TilesetsPath = $"{SpritesPath}Tilesets/";
 
-        protected override void OnPostInitialize()
+        public override void OnPostInitialize()
         {
             base.OnPostInitialize();
             AutoPatchHandler.Patch();

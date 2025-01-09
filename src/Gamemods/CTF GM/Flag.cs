@@ -234,10 +234,9 @@ namespace DuckGame.C44P
                 }
 
                 Vec2 flagStart = position + new Vec2((spr.flipH ? -flagOffsetX : flagOffsetX) * spr.scale.x, -flagHeight * spr.scale.y);
-
                 Graphics.Draw(spr.texture,
                     flagStart + new Vec2((i * 2) * scale.x * flagScale * (spr.flipH ? -1f : 1f), sinOffset * 3.8f * (i / 51f)),
-                    new Rectangle?(new Rectangle((i * 2), 0f, 3f, 18f)),
+                    new Rectangle(i * 2, 0f, 3f, 18f),
                     Color.White,
                     flagRotation,
                     Vec2.Zero,

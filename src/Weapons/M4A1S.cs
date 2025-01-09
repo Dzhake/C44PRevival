@@ -29,7 +29,7 @@ public class M4A1S : Gun
         editorTooltip = "Accurate and fast machine gun with low ammo count.";
     }
 
-    protected override void PlayFireSound()
+    public override void PlayFireSound()
     {
         SFX.Play(_fireSound, 0.5f, -0.1f + Rando.Float(0.2f) + _fireSoundPitch);
     }

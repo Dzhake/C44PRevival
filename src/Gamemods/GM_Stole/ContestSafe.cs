@@ -64,11 +64,11 @@ namespace DuckGame.C44P
         {
             if (contested == false) 
             {
-                TEquipment equipment = Level.CheckCircle<TEquipment>(position, rangeOfUse);
-                if (equipment != null && equipment.equippedDuck != null)
+                TArmor armor = Level.CheckCircle<TArmor>(position, rangeOfUse);
+                if (armor != null && armor.equippedDuck != null)
                 {
                     keyVisibility = Maths.LerpTowards(keyVisibility, 1, 0.04f);
-                    if (equipment.equippedDuck.holdObject == null)
+                    if (armor.equippedDuck.holdObject == null)
                     {
                         ableToInteract = true;
                     }
@@ -76,7 +76,7 @@ namespace DuckGame.C44P
                     {
                         ableToInteract = false;
                     }
-                    if (equipment.equippedDuck.inputProfile.Down("SHOOT") && equipment.equippedDuck.holdObject == null)
+                    if (armor.equippedDuck.inputProfile.Down("SHOOT") && armor.equippedDuck.holdObject == null)
                     {
                         if(contesting == 0)
                         {
@@ -94,11 +94,11 @@ namespace DuckGame.C44P
                     if (contesting > 4f)
                     {
                         contested = true;
-                        if (equipment.equippedDuck.position.x < position.x)
+                        if (armor.equippedDuck.position.x < position.x)
                         {
                             _sprite.SetAnimation("left");
                         }
-                        if (equipment.equippedDuck.position.x > position.x)
+                        if (armor.equippedDuck.position.x > position.x)
                         {
                             _sprite.SetAnimation("right");
                         }

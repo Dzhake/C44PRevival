@@ -38,11 +38,11 @@
                     {
                         if (gm != null)
                         {
-                            if (d.HasEquipment(typeof(TEquipment)))
+                            if (d.HasEquipment(typeof(TArmor)))
                             {
                                 gm.contesting = true;
                             }
-                            if (d.HasEquipment(typeof(CTEquipment)))
+                            if (d.HasEquipment(typeof(CTArmor)))
                             {
                                 gm.uncontesting = true;
                             }

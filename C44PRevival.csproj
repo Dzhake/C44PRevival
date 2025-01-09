@@ -29,29 +29,36 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="echo F|xcopy &quot;$(TargetPath)&quot; &quot;../../Mods/C44PRevival/C44PRevival.dll&quot; /h /y" />
+    <Exec Command="echo F|xcopy &quot;$(ProjectDir)$(OutputPath)\BepInEx.AssemblyPublicizer.dll&quot; &quot;../../Mods/C44PRevival/content/Dlls/BepInEx.AssemblyPublicizer.dll&quot; /h /y" />
+    <Exec Command="echo F|xcopy &quot;$(ProjectDir)$(OutputPath)\BepInEx.AssemblyPublicizer.MSBuild.dll&quot; &quot;../../Mods/C44PRevival/content/Dlls/BepInEx.AssemblyPublicizer.MSBuild.dll&quot; /h /y" />
   </Target>
 
   <ItemGroup>
     <Compile Remove="src\Grenades\Flashbang.cs" />
     <Compile Remove="src\Grenades\Flashlight.cs" />
-    <Compile Remove="src\Main\AutoUpdate.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DuckGame">
-      <HintPath>N:\Steam\steamapps\common\Duck Game\DuckGame.exe</HintPath>
-    </Reference>
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="N:\Steam\steamapps\common\Duck Game\DuckGame.exe" Publicize="true"/>
     <Reference Include="HarmonyLoader">
       <HintPath>..\..\Mods\C44PRevival\content\dlls\HarmonyLoader.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework">
-      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.dll</HintPath>
+      <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework.Game">
-      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Game\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Game.dll</HintPath>
+      <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Game\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Game.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework.Graphics">
-      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Graphics\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Graphics.dll</HintPath>
+      <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Graphics\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Graphics.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
