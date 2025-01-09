@@ -20,7 +20,7 @@ public class M4A1S : Gun
         _fireSound = "deepMachineGun2";
         _fullAuto = true;
         _fireWait = 0.8f;
-        _kickForce = 1.5f;
+        _kickForce = 2;
         _fireRumble = RumbleIntensity.Kick;
         loseAccuracy = 0.2f;
         maxAccuracyLost = 0.4f;
