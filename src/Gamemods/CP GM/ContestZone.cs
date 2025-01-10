@@ -11,8 +11,8 @@
         private bool rig;
         public ContestZone(float xval, float yval) : base(xval, yval)
         {
-            _sprite = new SpriteMap(Mod.GetPath<C44P>("Sprites/Gamemods/CP/ContestZone.png"), 16, 16, false);
-            base.graphic = new SpriteMap(Mod.GetPath<C44P>("Sprites/Gamemods/CP/ContestZone.png"), 16, 16, false);
+            _sprite = new SpriteMap(Mod.GetPath<C44P>("Sprites/Gamemodes/CP/ContestZone.png"), 16, 16, false);
+            base.graphic = new SpriteMap(Mod.GetPath<C44P>("Sprites/Gamemodes/CP/ContestZone.png"), 16, 16, false);
             center = new Vec2(8f, 8f);
             _sprite.frame = 8;
             collisionOffset = new Vec2(-8f, -8f);

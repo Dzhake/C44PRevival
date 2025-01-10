@@ -10,7 +10,7 @@
             center = new Vec2(8f, 24f);
             collisionOffset = new Vec2(-8f, -24f);
             collisionSize = new Vec2(16f, 48f);
-            _sprite = new SpriteMap(GetPath("Sprites/Gamemods/Safezone.png"), 16, 48, true);
+            _sprite = new SpriteMap(GetPath("Sprites/Gamemodes/Safezone.png"), 16, 48, true);
             base.graphic = _sprite;
             depth = -0.8f;
             thickness = 10f;

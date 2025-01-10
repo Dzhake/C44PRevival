@@ -23,10 +23,10 @@ namespace DuckGame.C44P
         {
             cantUse.CenterOrigin();
 
-            _sprite = new SpriteMap(Mod.GetPath<C44P>("Sprites/Gamemods/SafeStealing/Safe.png"), 32, 32, false);
+            _sprite = new SpriteMap(Mod.GetPath<C44P>("Sprites/Gamemodes/SafeStealing/Safe.png"), 32, 32, false);
             graphic = _sprite;
             _sprite.frame = 0;
-            _letter = new SpriteMap(Mod.GetPath<C44P>("Sprites/Gamemods/SafeStealing/PointLoader.png"), 17, 17, false);
+            _letter = new SpriteMap(Mod.GetPath<C44P>("Sprites/Gamemodes/SafeStealing/PointLoader.png"), 17, 17, false);
             center = new Vec2(16f, 21.5f);
             collisionSize = new Vec2(16f, 19f);
             collisionOffset = new Vec2(-8f, -9.5f);

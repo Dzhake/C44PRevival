@@ -24,13 +24,13 @@ namespace DuckGame.C44P
         public EditorProperty<float> RoundTime; 
         public EditorProperty<float> AdditionalPoints;
 
-        Sprite off = new Sprite(Mod.GetPath<C44P>("Sprites/Gamemods/StatusOFF.png"));
-        Sprite on = new Sprite(Mod.GetPath<C44P>("Sprites/Gamemods/StatusON.png"));
-        Sprite warn = new Sprite(Mod.GetPath<C44P>("Sprites/Gamemods/StatusWARN.png"));
+        Sprite off = new Sprite(Mod.GetPath<C44P>("Sprites/Gamemodes/StatusOFF.png"));
+        Sprite on = new Sprite(Mod.GetPath<C44P>("Sprites/Gamemodes/StatusON.png"));
+        Sprite warn = new Sprite(Mod.GetPath<C44P>("Sprites/Gamemodes/StatusWARN.png"));
 
         public GM_Collection(float xval, float yval, CollectBase cb = null, GMTimer gmt = null) : base(xval, yval)
         {
-            _sprite = new SpriteMap(Mod.GetPath<C44P>("Sprites/Gamemods/GameMode.png"), 16, 16, false);
+            _sprite = new SpriteMap(Mod.GetPath<C44P>("Sprites/Gamemodes/GameMode.png"), 16, 16, false);
             base.graphic = _sprite;
             center = new Vec2(8f, 8f);
             collisionOffset = new Vec2(-7f, -7f);

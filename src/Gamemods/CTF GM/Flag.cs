@@ -29,10 +29,10 @@ namespace DuckGame.C44P
 
         public Flag(float xval, float yval) : base(xval, yval)
         {
-            _sprite = new SpriteMap(GetPath("Sprites/Gamemods/CTF/FlagPole.png"), 11, 51, false);
+            _sprite = new SpriteMap(GetPath("Sprites/Gamemodes/CTF/FlagPole.png"), 11, 51, false);
             base.graphic = _sprite;
 
-            flag = new SpriteMap(GetPath("Sprites/Gamemods/CTF/Flag.png"), 27, 18, false);
+            flag = new SpriteMap(GetPath("Sprites/Gamemodes/CTF/Flag.png"), 27, 18, false);
             flag.CenterOrigin(); 
 
             center = new Vec2(5.5f, 24.5f);

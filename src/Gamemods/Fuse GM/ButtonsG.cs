@@ -8,7 +8,7 @@
             center = new Vec2(6f, 8f);
             collisionOffset = new Vec2(-6f, -8f);
             collisionSize = new Vec2(12f, 16f);
-            _sprite = new SpriteMap(GetPath("Sprites/Gamemods/FuseMode/Buttons.png"), 12, 16, false);
+            _sprite = new SpriteMap(GetPath("Sprites/Gamemodes/FuseMode/Buttons.png"), 12, 16, false);
             _sprite.frame = Rando.Int(0, 9);
             graphic = _sprite;
         }

@@ -7,15 +7,17 @@ namespace DuckGame.C44P
     public class C4 : Holdable
     {
         public SpriteMap _sprite;
-        public List<Bullet> firedBullets = new List<Bullet>();
+        public List<Bullet> firedBullets = new();
 
-        public float holden = 0f;
+        public enum BombState {Spawned, Planted, Defused}
+
+        public float holden;
         public float C4timer = 25f;
-        public float defuse = 0f;
+        public float defuse;
 
-        public bool planted = false;
-        public bool defused = false;
-        public bool coZone = false;
+        public bool planted;
+        public bool defused;
+        public bool coZone;
 
         bool ableToPlant;
         bool ableToDefuse;
@@ -23,34 +25,27 @@ namespace DuckGame.C44P
 
         public C4(float xval, float yval) : base(xval, yval)
         {
-            weight = 0f;
+            _weight = 0f;
             _editorName = "Non-GM C4";
 
-            collisionSize = new Vec2(8f, 10f);
-            collisionOffset = new Vec2(-4f, -6f);
-            center = new Vec2(8f, 6f);
+            _collisionSize = new Vec2(8f, 10f);
+            _collisionOffset = new Vec2(-4f, -6f);
+            _center = new Vec2(8f, 6f);
 
-            _sprite = new SpriteMap(GetPath("Sprites/Gamemods/FuseMode/C4"), 16, 12, false);
-            base.graphic = new SpriteMap(GetPath("Sprites/Gamemods/FuseMode/C4.png"), 16, 12, false);
-            _sprite.AddAnimation("idle", 1f, true, new int[1]);
+            _sprite = new SpriteMap($"{C44P.SpritesPath}Gamemodes/FuseMode/C4", 16, 12);
+            _sprite.AddAnimation("idle", 1f, true, 1);
+            _graphic = _sprite;
         }
 
         public override void Update()
         {
             if (position.y > Level.current.lowestPoint + 400f)
             {
-                GM_Fuse fuse = Level.Nearest<GM_Fuse>(x, y);
+                GM_Fuse? fuse = Level.Nearest<GM_Fuse>(x, y);
+                if (fuse is null) return;
                 position = fuse.position;
             }
 
-            if (prevOwner != null)
-            {
-                Duck prev = prevOwner as Duck;
-                if (prev.HasEquipment(typeof(CTArmor)))
-                {
-                    hSpeed = 0f;
-                }
-            }
             if (planted)
             {
                 angleDegrees = 0;
@@ -73,6 +68,7 @@ namespace DuckGame.C44P
                     }
                 }
             }
+
             if (planted && !defused)
             {
                 if (coZone)
@@ -86,16 +82,10 @@ namespace DuckGame.C44P
                     
                 }
             }
+
             if (owner != null)
             {
                 Duck d = owner as Duck;
-                if (d.HasEquipment(typeof(CTArmor)))
-                {
-                    d.doThrow = true;
-                    hSpeed *= 0f;
-                    vSpeed *= 0f;
-                    velocity *= new Vec2(0f, 0f);
-                }
                 if (d.inputProfile.Released("SHOOT") && !planted && !d.crouch)
                 {
                     holden = 0f;

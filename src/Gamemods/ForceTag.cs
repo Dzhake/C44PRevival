@@ -25,8 +25,8 @@ namespace DuckGame.C44P
         public bool triggered;
 
         Color[] colors = new Color[] { Color.LightBlue, Color.Red, Color.Purple, Color.OrangeRed, Color.DarkGreen, Color.YellowGreen, Color.Lime, Color.Magenta};
-        SpriteMap sprite = new SpriteMap(GetPath<C44P>("Sprites/Gamemods/Tag.png"), 16, 16); 
-        SpriteMap marks = new SpriteMap(GetPath<C44P>("Sprites/Gamemods/TagProperties.png"), 32, 8);
+        SpriteMap sprite = new SpriteMap(GetPath<C44P>("Sprites/Gamemodes/Tag.png"), 16, 16); 
+        SpriteMap marks = new SpriteMap(GetPath<C44P>("Sprites/Gamemodes/TagProperties.png"), 32, 8);
 
         int respawnCooldown;
 

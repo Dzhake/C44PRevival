@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace DuckGame.C44P
+﻿namespace DuckGame.C44P
 {
     [EditorGroup("ADGM|Teams")]
     public class CTArmor : ChestPlate
@@ -13,6 +11,21 @@ namespace DuckGame.C44P
             _spriteOver = new SpriteMap(new Tex2D(1, 1), 1, 1);
             _editorName = "CT";
             editorTooltip = "Give this armor to counter-terrorists via Equipper";
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            canPickUp = true;
+        }
+
+        public override void Equip(Duck d)
+        {
+            base.Equip(d);
+            if (!FuseTeams.DuckTeams.ContainsKey(d))
+            {
+                FuseTeams.DuckTeams.Add(d, FuseTeams.FuseTeam.CT);
+            }
         }
     }
 }

@@ -15,6 +15,7 @@
     <AssemblyInfoFilePath>Properties\AssemblyInfo.cs</AssemblyInfoFilePath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TargetFramework>net4.8</TargetFramework>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">

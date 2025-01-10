@@ -12,5 +12,20 @@
             _editorName = "T";
             editorTooltip = "Give this armor to terrorists via Equipper";
         }
+
+        public override void Update()
+        {
+            base.Update();
+            canPickUp = true;
+        }
+
+        public override void Equip(Duck d)
+        {
+            base.Equip(d);
+            if (!FuseTeams.DuckTeams.ContainsKey(d))
+            {
+                FuseTeams.DuckTeams.Add(d, FuseTeams.FuseTeam.T);
+            }
+        }
     }
 }

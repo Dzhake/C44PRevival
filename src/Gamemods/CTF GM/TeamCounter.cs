@@ -40,7 +40,7 @@
                     Vec2 Unit = camSize / new Vec2(320, 180);
                     drawPosition += new Vec2(0, 14f) * Unit;
 
-                    SpriteMap flag = new SpriteMap(GetPath("Sprites/Gamemods/CTF/Flag.png"), 27, 18);
+                    SpriteMap flag = new SpriteMap(GetPath("Sprites/Gamemodes/CTF/Flag.png"), 27, 18);
                     flag.CenterOrigin();
 
                     int[] sameAmount = new int[8];

@@ -43,7 +43,7 @@ namespace DuckGame.C44P
             center = new Vec2(12f, 6f);
             collisionOffset = new Vec2(-6f, -6f);
             collisionSize = new Vec2(12f, 12f);
-            _sprite = new SpriteMap(GetPath("Sprites/Gamemods/CollectingMode/Collectible.png"), 24, 12, false);
+            _sprite = new SpriteMap(GetPath("Sprites/Gamemodes/CollectingMode/Collectible.png"), 24, 12, false);
             thickness = 0.1f;
             _equippedDepth = 3;
             base.graphic = _sprite;

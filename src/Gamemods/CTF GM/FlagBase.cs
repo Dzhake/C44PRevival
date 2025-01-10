@@ -38,7 +38,7 @@ namespace DuckGame.C44P
             _flag = flag;
 
             team = new EditorProperty<int>(1, this, 1, 8, 1, null, false, false);
-            _sprite = new SpriteMap(GetPath("Sprites/Gamemods/CTF/FlagBase.png"), 17, 4, false);
+            _sprite = new SpriteMap(GetPath("Sprites/Gamemodes/CTF/FlagBase.png"), 17, 4, false);
             base.graphic = _sprite;
 
             center = new Vec2(8.5f, 2f);

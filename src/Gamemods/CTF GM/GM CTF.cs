@@ -20,12 +20,12 @@ namespace DuckGame.C44P
         public EditorProperty<float> maxPoints;
         public EditorProperty<float> RoundTime;
 
-        Sprite off = new Sprite(Mod.GetPath<C44P>("Sprites/Gamemods/StatusOFF.png"));
-        Sprite on = new Sprite(Mod.GetPath<C44P>("Sprites/Gamemods/StatusON.png"));
-        Sprite warn = new Sprite(Mod.GetPath<C44P>("Sprites/Gamemods/StatusWARN.png"));
+        Sprite off = new Sprite(Mod.GetPath<C44P>("Sprites/Gamemodes/StatusOFF.png"));
+        Sprite on = new Sprite(Mod.GetPath<C44P>("Sprites/Gamemodes/StatusON.png"));
+        Sprite warn = new Sprite(Mod.GetPath<C44P>("Sprites/Gamemodes/StatusWARN.png"));
         public GM_CTF(float xval, float yval) : base(xval, yval)
         {
-            _sprite = new SpriteMap(GetPath("Sprites/Gamemods/GameMode.png"), 16, 16, false);
+            _sprite = new SpriteMap(GetPath("Sprites/Gamemodes/GameMode.png"), 16, 16, false);
             base.graphic = _sprite;
             center = new Vec2(8f, 8f);
             collisionOffset = new Vec2(-7f, -7f);
