@@ -8,11 +8,13 @@
         {
             Timer = stayTime;
             layer = Layer.Foreground;
-            center = new Vec2(12f, 8f);
-            _sprite = new SpriteMap(Mod.GetPath<C44P>("Sprites/Gamemodes/FuseMode/Defusing.png"), 24, 16);
-            _sprite.center = new Vec2(12f, 8f);
-            _sprite._frame = frame;
-            _sprite.scale = new Vec2(2f, 2f);
+            _center = new Vec2(12f, 8f);
+            _sprite = new SpriteMap(Mod.GetPath<C44P>("Sprites/Gamemodes/Fuse/Defusing.png"), 24, 16)
+            {
+                center = new Vec2(12f, 8f),
+                _frame = frame,
+                scale = new Vec2(2f, 2f)
+            };
         }
         public override void Update()
         {

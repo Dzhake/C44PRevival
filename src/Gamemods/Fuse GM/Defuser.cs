@@ -11,8 +11,8 @@
             collisionOffset = new Vec2(-4f, -5f);
             collisionSize = new Vec2(8f, 11f);
             graphic = _sprite;
-            _sprite = new SpriteMap(GetPath("Sprites/Gamemodes/FuseMode/Defuser"), 14, 11, false);
-            base.graphic = new SpriteMap(GetPath("Sprites/Gamemodes/FuseMode/Defuser.png"), 14, 11, false);
+            _sprite = new SpriteMap(GetPath("Sprites/Gamemodes/Fuse/Defuser"), 14, 11, false);
+            base.graphic = new SpriteMap(GetPath("Sprites/Gamemodes/Fuse/Defuser.png"), 14, 11, false);
             weight = 0f;
             onlyCT = new EditorProperty<bool>(true);
         }

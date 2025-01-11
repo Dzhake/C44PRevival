@@ -29,8 +29,8 @@ namespace DuckGame.C44P
 
         private bool isTimerActive;
 
-        public StateBinding _TimerBind = new StateBinding("_time", -1, false, false);
-        public StateBinding _StringBind = new StateBinding("str", -1, false, false);
+        public StateBinding _TimerBind = new("_time");
+        public StateBinding _StringBind = new("str");
 
         public bool progressBar;
         public float progress;
@@ -121,15 +121,11 @@ namespace DuckGame.C44P
         public override void Update()
         {
             base.Update();
-            if (isTimerActive)
-            {
-                time -= 0.01666666f;
-                if(time < 0)
-                {
-                    time = 0;
-                    isTimerActive = false;
-                }
-            }
+            if (!isTimerActive) return;
+            time -= Maths.IncFrameTimer();
+            if (!(time < 0)) return;
+            time = 0;
+            isTimerActive = false;
         }
 
         public override void Draw()
@@ -155,7 +151,7 @@ namespace DuckGame.C44P
             text = Convert.ToString(mins) + ":";
             if (seconds < 10)
                 text += "0";
-             text += Convert.ToString(seconds);
+            text += Convert.ToString(seconds);
 
             float xposit = textPos.x - _font.GetWidth(text, false, null) / 2f;
 
@@ -204,9 +200,7 @@ namespace DuckGame.C44P
                         }
                     }
                     else
-                    {
                         InitializeDots();
-                    }
                 }
                 if(progressBarType == ProgressBarType.ScoreCompetition)
                 {
