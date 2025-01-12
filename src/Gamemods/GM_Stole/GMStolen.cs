@@ -85,17 +85,10 @@ namespace DuckGame.C44P
                 _timer.progress = (float)contestedSafes;
 
 
-                if (_timer.time >= 14.97f && _timer.time < 15f)
-                {
-                    SFX.Play(GetPath("15sec.wav"), 1f, 0f, 0f, false);
-                }
+                
                 if (_timer.time >= 9.97f && _timer.time < 10f)
                 {
                     SFX.Play(GetPath("10sec.wav"), 1f, 0f, 0f, false);
-                }
-                if (_timer.time % 1 >= 0.97f && (_timer.time + 1) % 1 < 1f && _timer.time < 5)
-                {
-                    SFX.Play(GetPath("LastSec.wav"), 1f, 0f, 0f, false);
                 }
                 if (!(Level.current is Editor))
                 {

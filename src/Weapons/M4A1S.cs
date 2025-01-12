@@ -16,7 +16,7 @@ public class M4A1S : Gun
         _collisionOffset = new Vec2(-16f, -7f);
         _collisionSize = new Vec2(27f, 12f);
         _barrelOffsetTL = new Vec2(38f, 14f);
-        _holdOffset = new Vec2(3f, 2f);
+        _holdOffset = new Vec2(3f, 1f);
         _fireSound = "deepMachineGun2";
         _fullAuto = true;
         _fireWait = 0.8f;

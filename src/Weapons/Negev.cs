@@ -38,7 +38,7 @@ public class Negev : Gun
     public override void Update()
     {
         base.Update();
-        if (!_triggerHeld) _ammoType.accuracy = Maths.LerpTowards(_ammoType.accuracy, 0.1f, 0.01f);
+        if (!_triggerHeld || ammo <= 0) _ammoType.accuracy = Maths.LerpTowards(_ammoType.accuracy, 0.1f, 0.01f);
     }
 
     public override void Fire()

@@ -18,15 +18,8 @@
         {
             base.Update();
             canPickUp = true;
-        }
-
-        public override void Equip(Duck d)
-        {
-            base.Equip(d);
-            if (!FuseTeams.DuckTeams.ContainsKey(d))
-            {
-                FuseTeams.DuckTeams.Add(d, FuseTeams.FuseTeam.T);
-            }
+            if (!FuseTeams.DuckTeams.ContainsKey(_equippedDuck))
+                FuseTeams.DuckTeams.Add(_equippedDuck, FuseTeams.FuseTeam.CT);
         }
     }
 }

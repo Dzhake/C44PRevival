@@ -1,12 +1,18 @@
-﻿using System;
-
-namespace DuckGame.C44P;
+﻿namespace DuckGame.C44P;
 
 [EditorGroup("ADGM|Guns")]
 public class AWP : Sniper
 {
-    public Vec2 normalBarrelOffsetTL = new(37f, 3f);
-    public Vec2 shortBarrelOffsetTL = new(20f, 5f);
+    protected float aimAngle;
+
+    public override float angle
+    {
+        get =>
+            owner != null && aimAngle != 0
+                ? Maths.DegToRad(aimAngle - (offDir < 0 ? 180 : 0))
+                : base.angle;
+        set => base.angle = value;
+    }
 
     public AWP(float xval, float yval) : base(xval, yval)
     {
@@ -18,10 +24,10 @@ public class AWP : Sniper
         _collisionSize = new Vec2(16f, 8f);
         _barrelOffsetTL = new Vec2(37f, 3f);
         _fireSoundPitch = -0.9f;
-        _kickForce = 8f;
+        _kickForce = 7f;
         _fireRumble = RumbleIntensity.Light;
         laserSight = true;
-        _laserOffsetTL = new Vec2(40f, 4f);
+        _laserOffsetTL = new Vec2(40f, 4.5f);
         _manualLoad = true;
 
         _holdOffset = new Vec2(2f, -2f);
@@ -33,39 +39,17 @@ public class AWP : Sniper
     public override void Update()
     {
         base.Update();
-        if (!loaded || owner == null || _loadState != -1) return;
-
-        Duck nearestTarget = null;
-        foreach (Duck d in Level.current.things[typeof(Duck)])
-        {
-            if (((d.position.x <= barrelPosition.x || offDir <= 0) &&
-                 (d.position.x >= barrelPosition.x || offDir >= 0))
-                || Level.CheckLine<Block>(d.position, barrelPosition) != null ||
-                Level.CheckLine<Safezone>(d.position, barrelPosition) != null) continue;
-
-            if (nearestTarget == null || (barrelPosition - d.position).length < (barrelPosition - nearestTarget.position).length)
-                nearestTarget = d;
-        }
-
-        if (nearestTarget == null) return;
-
-        float aimAngle = (float)Math.Atan2(nearestTarget.position.y - barrelPosition.y, (nearestTarget.position.x - barrelPosition.x) * offDir);
-        aimAngle *= offDir;
-        if (aimAngle < Math.PI * 0.07f && aimAngle > Math.PI * -0.07f)
-            angle = aimAngle * 0.8f;
-    }
-
-    public override void Fire()
-    {
-        CheckBarrelOffset();
-        base.Fire();
+        aimAngle = 0;
+        if (!loaded || _loadState != -1 || owner is not Duck || duck.hSpeed + duck.vSpeed > 0.1f || !duck.grounded) return;
+        Duck? target = GetTarget();
+        if (target is null) return;
+        aimAngle = -Maths.PointDirection(barrelOffset, target.position + new Vec2(0f, 3f));
     }
 
     public override void OnPressAction()
     {
         if (loaded)
         {
-            CheckBarrelOffset();
             base.OnPressAction();
             return;
         }
@@ -76,20 +60,24 @@ public class AWP : Sniper
         _loadAnimation = 0;
     }
 
-    public override void Draw()
+    public Duck? GetTarget()
     {
-        float ang = angle;
-        angle -= _angleOffset * offDir;
-        base.Draw();
-        angle = ang;
-    }
+        Duck? d = null;
+        float dist = float.MaxValue;
+        foreach (Thing t in Level.current.things[typeof(IAmADuck)])
+        {
+            if ((t.x < barrelOffset.x && offDir > 0) || (t.x > barrelOffset.x && offDir < 0) || Level.CheckLine<Block>(position, t.position) != null
+                || t == owner || !(Distance(t) <= _ammoType.range)) continue;
 
-    protected void CheckBarrelOffset()
-    {
-        if (Level.CheckLine<Safezone>(position, barrelPosition) != null || Level.CheckLine<Block>(position, barrelPosition) != null)
-            _barrelOffsetTL = shortBarrelOffsetTL;
-        else
-            _barrelOffsetTL = normalBarrelOffsetTL;
+            float curDist = (position - t.position).lengthSq;
+            if (curDist < dist)
+            {
+                dist = curDist;
+                if (Duck.GetAssociatedDuck(t) != null && !Duck.GetAssociatedDuck(t).dead && (duck == null || Duck.GetAssociatedDuck(t).team != duck.team))
+                    d = Duck.GetAssociatedDuck(t);
+            }
+        }
+        return d;
     }
 }
 

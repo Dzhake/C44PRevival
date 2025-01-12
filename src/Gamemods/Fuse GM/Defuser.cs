@@ -1,43 +1,22 @@
-﻿namespace DuckGame.C44P
+﻿namespace DuckGame.C44P;
+
+[EditorGroup("ADGM|GameMode Fuse")]
+[BaggedProperty("canSpawn", false)]
+public class Defuser : Holdable
 {
-    [EditorGroup("ADGM|GameMode Fuse")]
-    public class Defuser : Holdable
+    public Defuser(float xval, float yval) : base(xval, yval)
     {
-        SpriteMap _sprite;
-        public EditorProperty<bool> onlyCT;
-        public Defuser(float xval, float yval) : base(xval, yval)
-        {
-            center = new Vec2(7f, 5f);
-            collisionOffset = new Vec2(-4f, -5f);
-            collisionSize = new Vec2(8f, 11f);
-            graphic = _sprite;
-            _sprite = new SpriteMap(GetPath("Sprites/Gamemodes/Fuse/Defuser"), 14, 11, false);
-            base.graphic = new SpriteMap(GetPath("Sprites/Gamemodes/Fuse/Defuser.png"), 14, 11, false);
-            weight = 0f;
-            onlyCT = new EditorProperty<bool>(true);
-        }
-        public override void Update()
-        {
-            if (onlyCT == true)
-            {
-                if (owner != null)
-                {
-                    Duck d = owner as Duck;
-                    if (!d.HasEquipment(typeof(CTArmor)))
-                    {
-                        d.doThrow = true;
-                    }
-                }
-                if (prevOwner != null)
-                {
-                    Duck d = prevOwner as Duck;
-                    if (!d.HasEquipment(typeof(CTArmor)))
-                    {
-                        hSpeed = 0f;
-                    }
-                }
-            }
-            base.Update();
-        }
+        _center = new Vec2(7f, 5f);
+        _collisionOffset = new Vec2(-4f, -5f);
+        _collisionSize = new Vec2(8f, 11f);
+        _graphic = new($"{C44P.SpritesPath}Gamemodes/Fuse/Defuser");
+        _weight = 1f;
+        tapeable = false;
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        canPickUp = true;
     }
 }

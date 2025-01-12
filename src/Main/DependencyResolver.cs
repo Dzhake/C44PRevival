@@ -59,7 +59,7 @@ public static class DependencyResolver
         }
 
         //Time to look in the mod dlls folder!
-        string path = Mod.GetPath<Mod>("/Dlls/" + assemblyShortName + ".dll");
+        string path = Mod.GetPath<C44P>("/Dlls/" + assemblyShortName + ".dll");
 
         if (!File.Exists(path))
         {

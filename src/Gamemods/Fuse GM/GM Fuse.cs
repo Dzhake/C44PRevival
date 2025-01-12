@@ -1,10 +1,9 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.Linq;
 
 namespace DuckGame.C44P;
 
 [EditorGroup("ADGM|GameMode Fuse")]
+[BaggedProperty("canSpawn", false)]
 public class GM_Fuse : Thing
 {
     public GMTimer? _timer;
@@ -16,12 +15,14 @@ public class GM_Fuse : Thing
     public EditorProperty<float> ExplosionTime;
     public EditorProperty<bool> PlantZones;
 
-    public StateBinding _time = new("time");
-    public StateBinding _c4Bind = new("c4");
+    public StateBinding timeBinding = new("time");
+    public StateBinding c4Binding = new("c4");
+    protected bool _inited;
 
     public GM_Fuse(float xval, float yval) : base(xval, yval)
     {
-        SpriteMap sprite = new(Mod.GetPath<C44P>("Sprites/Gamemodes/GameMode.png"), 16, 16, false);
+        FuseTeams.Reset();
+        SpriteMap sprite = new(Mod.GetPath<C44P>("Sprites/Gamemodes/GameMode.png"), 16, 16);
         _graphic = sprite;
         _center = new Vec2(8f, 8f);
         _collisionOffset = new Vec2(-7f, -7f);
@@ -37,40 +38,27 @@ public class GM_Fuse : Thing
         maxPlaceable = 1;
     }
 
-    public override void Initialize()
-    {
-        base.Initialize();
-        time = RoundTime;
-
-        if (c4 != null || Level.current is Editor || !isServerForObject) return;
-
-        c4 = new C4(x, y)
-        {
-            GM = this
-        };
-        Level.Add(c4);
-        if (PlantZones)
-            c4.ZoneOnly = true;
-
-        _timer = new GMTimer(c4.position.x, c4.position.y - 16f)
-        {
-            anchor = c4,
-            depth = 0.95f
-        };
-        Level.Add(_timer);
-        //Fondle(_timer);  ?
-    }
-
     public override void Update()
     {
         base.Update();
 
-        if (time >= 14.97 && time < 15)
-            SFX.Play(GetPath("SFX/15sec.wav"));
+        if (!_inited)
+        {
+            time = RoundTime;
+
+            if (Level.current is Editor || !isServerForObject) return;
+
+            _timer = new GMTimer(0, 0)
+            {
+                depth = 0.95f,
+                time = 0
+            };
+            Level.Add(_timer);
+            _inited = true;
+        }
+
         if (time >= 9.97 && time < 10)
             SFX.Play(GetPath("SFX/10sec.wav"));
-        if (time > 0 && time < 5 && time % 1 > 0.97)
-            SFX.Play(GetPath("SFX/LastSec.wav"));
 
         if (c4 == null || Level.current is Editor || _timer is null) return;
 
@@ -93,9 +81,6 @@ public class GM_Fuse : Thing
                 time -= Maths.IncFrameTimer();
                 if (c4.State == C4.BombState.Planted && time % 1 > 0.02f && time % 1 < 0.05f)
                     SFX.Play(GetPath("SFX/bombbeep.wav"));
-
-                /*if (Level.current is GameLevel gameLevel)
-                    gameLevel._mode._roundEndWait = 1 + time * 0.3f;*/ //0.005 * 60
                 break;
             case <= 0f:
                 if (c4.State == C4.BombState.Planted) c4.Explode();
@@ -128,21 +113,21 @@ public class GM_Fuse : Thing
 
         bool CTArmorExists = false;
         bool TArmorExists = false;
-        bool nonGM_C4 = false;
+        bool C4Placed = false;
 
         foreach (Equipper equipper in Level.current.things[typeof(Equipper)])
-        {
-            if (equipper.contains is null) continue;
-
-            if (equipper.contains == typeof(CTArmor) || equipper.contains.IsSubclassOf(typeof(CTArmor)))
-                CTArmorExists = true;
-
-            if (equipper.contains == typeof(TArmor) || equipper.contains.IsSubclassOf(typeof(TArmor)))
-                TArmorExists = true;
-        }
+            switch (equipper.GetContainedInstance())
+            {
+                case CTArmor:
+                    CTArmorExists = true;
+                    break;
+                case TArmor:
+                    TArmorExists = true;
+                    break;
+            }
 
         if (Level.current.things[typeof(C4)].Any())
-            nonGM_C4 = true;
+            C4Placed = true;
 
         int row = 0;
         const int yoffset = 16;
@@ -170,6 +155,12 @@ public class GM_Fuse : Thing
         Graphics.Draw(TArmorExists ? on : off, Level.current.camera.position.x + xoffset * 0.5f * unit,
             Level.current.camera.position.y + (yMove + yoffset + spriteYOffset) * unit);
 
+        row++;
+        text = "C4 placed";
+        Graphics.DrawString(text, Level.current.camera.position + new Vec2(xoffset, row * yMove + yoffset) * unit, Color.White, depth, null, unit);
+        Graphics.Draw(C4Placed ? on : off, Level.current.camera.position.x + xoffset * 0.5f * unit, Level.current.camera.position.y + (row * yMove + yoffset + spriteYOffset) * unit);
+
+
         if (PlantZones)
         {
             bool isTherePlantZones = Level.current.things[typeof(PlantZone)].Any();
@@ -189,12 +180,6 @@ public class GM_Fuse : Thing
             Graphics.DrawString(text, Level.current.camera.position + new Vec2(xoffset, row * yMove + yoffset) * unit, Color.White, depth, null, unit);
             Graphics.Draw(warn, Level.current.camera.position.x + xoffset * 0.5f * unit, Level.current.camera.position.y + (row * yMove + yoffset + spriteYOffset) * unit);
         }
-
-        if (!nonGM_C4) return;
-        row++;
-        text = "Non-GM C4 placed";
-        Graphics.DrawString(text, Level.current.camera.position + new Vec2(xoffset, row * yMove + yoffset) * unit, Color.White, depth, null, unit);
-        Graphics.Draw(warn, Level.current.camera.position.x + xoffset * 0.5f * unit, Level.current.camera.position.y + (row * yMove + yoffset + spriteYOffset) * unit);
     }
 }
 

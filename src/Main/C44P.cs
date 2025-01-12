@@ -11,6 +11,7 @@
         public override void OnPostInitialize()
         {
             base.OnPostInitialize();
+            DependencyResolver.ResolveDependencies();
             AutoPatchHandler.Patch();
             GMIcons.Initialize();
         }

@@ -30,8 +30,6 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="echo F|xcopy &quot;$(TargetPath)&quot; &quot;../../Mods/C44PRevival/C44PRevival.dll&quot; /h /y" />
-    <Exec Command="echo F|xcopy &quot;$(ProjectDir)$(OutputPath)\BepInEx.AssemblyPublicizer.dll&quot; &quot;../../Mods/C44PRevival/content/Dlls/BepInEx.AssemblyPublicizer.dll&quot; /h /y" />
-    <Exec Command="echo F|xcopy &quot;$(ProjectDir)$(OutputPath)\BepInEx.AssemblyPublicizer.MSBuild.dll&quot; &quot;../../Mods/C44PRevival/content/Dlls/BepInEx.AssemblyPublicizer.MSBuild.dll&quot; /h /y" />
   </Target>
 
   <ItemGroup>
@@ -47,9 +45,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="N:\Steam\steamapps\common\Duck Game\DuckGame.exe" Publicize="true"/>
+    <Reference Include="N:\Steam\steamapps\common\Duck Game\DuckGame.exe" Publicize="true" />
     <Reference Include="HarmonyLoader">
-      <HintPath>..\..\Mods\C44PRevival\content\dlls\HarmonyLoader.dll</HintPath>
+      <HintPath>..\..\Mods\C44PRevival\content\Dlls\HarmonyLoader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework">

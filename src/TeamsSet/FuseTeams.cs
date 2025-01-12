@@ -52,7 +52,6 @@ public static class FuseTeams
     {
         return t switch
         {
-            Holster holster => CanPickUp(team, holster._containedObject) && t.canPickUp,
             Defuser or CTArmor => team is FuseTeam.CT && t.canPickUp,
             C4 or TArmor => team is FuseTeam.T && t.canPickUp,
             _ => t.canPickUp

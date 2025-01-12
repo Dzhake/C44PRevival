@@ -18,10 +18,10 @@ namespace DuckGame.C44P
 			_ammoType.accuracy = 0.9f;
 			_type = "gun";
 			_graphic = new Sprite($"{C44P.WeaponsPath}{fileName}");
-			_center = new Vec2(10f, 5f);
-			_collisionOffset = new Vec2(-8f, -4f);
-			_collisionSize = new Vec2(16f, 8f);
-			_barrelOffsetTL = new Vec2(9f, 2f);
+			_center = new Vec2(10, 5);
+			_collisionOffset = new Vec2(-8, -4);
+			_collisionSize = new Vec2(16, 8);
+			_barrelOffsetTL = new Vec2(20, 2);
 			_fireSound = "smg";
 			_fullAuto = true;
 			_fireWait = 0.4f;
@@ -39,9 +39,7 @@ namespace DuckGame.C44P
             base.Fire();
 			burst++;
 			if(burst > 6)
-            {
 				burst = 6;
-            }
 			loseAccuracy = 0.02f + 0.03f * burst;
 			_ammoType.accuracy = 0.9f - 0.05f * burst;
 			_ammoType.range = 170f - 10 * burst;

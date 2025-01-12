@@ -1,6 +1,7 @@
 ﻿namespace DuckGame.C44P
 {
     [EditorGroup("ADGM|GameMode Fuse")]
+    [BaggedProperty("canSpawn", false)]
     public class PlantZone : Thing
     {
         public PlantZone(float xval, float yval) : base(xval, yval)

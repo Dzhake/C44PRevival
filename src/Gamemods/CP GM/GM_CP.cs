@@ -77,10 +77,7 @@ namespace DuckGame.C44P
                 }
             }
 
-            if (time >= 14.97f && time < 15f && contest <= 0f)
-            {
-                SFX.Play(GetPath("15sec.wav"), 1f, 0f, 0f, false);
-            }
+            
             if (time >= 9.97f && time < 10f && contest <= 0f)
             {
                 SFX.Play(GetPath("10sec.wav"), 1f, 0f, 0f, false);

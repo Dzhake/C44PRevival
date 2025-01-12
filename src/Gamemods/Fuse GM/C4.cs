@@ -1,44 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace DuckGame.C44P;
+
 [EditorGroup("ADGM|GameMode Fuse")]
+[BaggedProperty("canSpawn", false)]
 public class C4 : Holdable
 {
+    public enum BombState { Spawned, Planted, Defused, Exploded }
+
+    public NetSoundEffect boopBeepSound;
+
     public bool ZoneOnly;
     public GM_Fuse? GM;
 
-    public enum BombState { Spawned, Planted, Defused, Exploded }
-
     public BombState State = BombState.Spawned;
     public float ActionTimer;
-
+    public StateBinding ActionTimerBinding = new("ActionTimer");
     protected bool DrawAction;
     protected float actionVisibility;
 
-    public StateBinding ActionTimerBinding = new("ActionTimer");
-
+    protected Vec2 respawnPos;
 
     public C4(float xval, float yval) : base(xval, yval)
     {
-        _weight = 0f;
-        _editorName = "Non-GM C4";
+        boopBeepSound = new NetSoundEffect($"{C44P.Soundspath}boopbeep");
+        _weight = 1f;
 
         _collisionSize = new Vec2(8f, 10f);
         _collisionOffset = new Vec2(-4f, -6f);
         _center = new Vec2(8f, 6f);
 
         _graphic = new($"{C44P.SpritesPath}Gamemodes/Fuse/C4");
+
+        respawnPos = new(xval, yval);
+        tapeable = false;
     }
 
     public override void Update()
     {
-        if (position.y > Level.current.lowestPoint + 400f)
+        if (GM is null)
         {
-            if (GM is null) return;
-            position = GM.position;
+            GM = Level.First<GM_Fuse>();
+            if (GM == default)
+            {
+                Level.Remove(this);
+                return;
+            }
+            GM.c4 = this;
+            ZoneOnly = GM.PlantZones;
         }
+
+        if (position.y > Level.current.lowestPoint + 400f)
+            position = respawnPos;
 
         switch (State)
         {
@@ -74,7 +88,7 @@ public class C4 : Holdable
 
         if (!d.crouch || !d.grounded || (ZoneOnly && Level.CheckRect<PlantZone>(topLeft, bottomRight) == null)) return;
 
-        DrawAction = Level.current is DuckGameTestArea || !Network.isActive || d == DuckNetwork.localProfile?.duck;
+        DrawAction = true;
         if (!d.inputProfile.Down("SHOOT")) return;
 
         d._disarmDisable = 5;
@@ -82,7 +96,7 @@ public class C4 : Holdable
         ActionTimer += Maths.IncFrameTimer();
         if (isServerForObject && ActionTimer % 0.3 > 0.02 && ActionTimer % 0.3 < 0.05)
         {
-            SFX.Play($"{C44P.Soundspath}boopbeep.wav");
+            boopBeepSound.Play();
             Level.Add(new PlantingButtonGraphic(x, y - 24f));
             d._disarmDisable = 0;
         }
@@ -154,6 +168,11 @@ public class C4 : Holdable
         foreach (Duck d in Level.CheckCircleAll<Duck>(position, 160f))
             d.Kill(new DTImpact(this));
 
+        Graphics.FlashScreen();
+        SFX.Play("explode");
+
+        if (!isServerForObject) return;
+
         Level.Add(new ExplosionPart(position.x, position.y));
         int num = 6;
 
@@ -165,44 +184,15 @@ public class C4 : Holdable
                 (float)(Math.Sin(Maths.DegToRad(dir)) * dist));
             Level.Add(ins);
         }
-
-        Graphics.FlashScreen();
-        SFX.Play("explode");
-
-        if (!isServerForObject) return;
-
-        List<Bullet> firedBullets = new();
-
-        for (int i = 0; i < 20; i++)
-        {
-            float dir = i * 18f - 5f + Rando.Float(10f);
-            ATShrapnel shrap = new()
-            {
-                range = 160f,
-                rangeVariation = 8f
-            };
-            Bullet bullet = new(position.x + (float)(Math.Cos(Maths.DegToRad(dir)) * 6.0), position.y -
-                (float)(Math.Sin(Maths.DegToRad(dir)) * 6.0), shrap, dir);
-            Level.Add(bullet);
-            firedBullets.Add(bullet);
-            if (Network.isActive)
-            {
-                NMFireGun gunEvent = new(null, firedBullets, 20, false);
-                Send.Message(gunEvent, NetMessagePriority.ReliableOrdered);
-                firedBullets.Clear();
-            }
-            Level.Remove(this);
-        }
     }
     public override void Draw()
     {
         base.Draw();
         actionVisibility = Maths.LerpTowards(actionVisibility, DrawAction ? 1 : 0, DrawAction ? 0.04f : 0.05f);
 
-        if (ActionTimer > 0 && State == BombState.Planted && (FuseTeams.Team(DuckNetwork.localProfile?.duck) == FuseTeams.FuseTeam.CT ||
-             !Network.isActive || Level.current is DuckGameTestArea))
-                Util.DrawCircle(new (position.x, position.y - 6f), 25, Color.LightGreen, 2f, depth, 50,
-                    (int)(ActionTimer * 10));
+        if (ActionTimer > 0 && State == BombState.Planted)
+            Util.DrawCircle(new (position.x, position.y - 6f), 25, Color.LightGreen, 2f, depth, 50,
+                (int)(ActionTimer * 10));
         
 
         if (actionVisibility <= 0) return;
