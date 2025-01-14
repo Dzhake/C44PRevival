@@ -18,7 +18,7 @@
         {
             base.Update();
             canPickUp = true;
-            if (!FuseTeams.DuckTeams.ContainsKey(_equippedDuck))
+            if (_equippedDuck != null && !FuseTeams.DuckTeams.ContainsKey(_equippedDuck))
                 FuseTeams.DuckTeams.Add(_equippedDuck, FuseTeams.FuseTeam.CT);
         }
     }

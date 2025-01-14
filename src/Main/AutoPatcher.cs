@@ -18,7 +18,7 @@ public static class AutoPatchHandler
         try
         {
             var harmony = HarmonyLoader.Loader.harmonyInstance;
-            DevConsole.Log("DzhakesWeaponry: starting patching", Color.LightGreen);
+            DevConsole.Log("ADGM: starting patching", Color.LightGreen);
 
             foreach (var origInfo in GetAllAutoPatches())
             {
@@ -63,7 +63,7 @@ public static class AutoPatchHandler
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
-                    DevConsole.Log("Patched method " + origInfo.DeclaringType?.Name + "." + origInfo.Name + " Onto " + attribute.Type.Name + "." + attribute.Method, Color.LightGreen);
+                    //DevConsole.Log("Patched method " + origInfo.DeclaringType?.Name + "." + origInfo.Name + " Onto " + attribute.Type.Name + "." + attribute.Method, Color.LightGreen);
                 }
             }
         }
@@ -73,7 +73,7 @@ public static class AutoPatchHandler
             DevConsole.Log(e.ToString());
         }
 
-        DevConsole.Log("DzhakesWeaponry: patching ended (successfully?)");
+        DevConsole.Log("ADGM: patching ended (successfully?)");
     }
 
     private static IEnumerable<MethodInfo> GetAllAutoPatches()

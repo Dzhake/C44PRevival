@@ -1,4 +1,6 @@
-﻿namespace DuckGame.C44P;
+﻿using System;
+
+namespace DuckGame.C44P;
 
 [EditorGroup("ADGM|Guns")]
 public class AWP : Sniper
@@ -40,10 +42,17 @@ public class AWP : Sniper
     {
         base.Update();
         aimAngle = 0;
-        if (!loaded || _loadState != -1 || owner is not Duck || duck.hSpeed + duck.vSpeed > 0.1f || !duck.grounded) return;
+        if (!loaded || _loadState != -1 || duck is null || Math.Abs(duck.hSpeed) + Math.Abs(duck.vSpeed) > 0.01f || !duck.grounded) return;
         Duck? target = GetTarget();
         if (target is null) return;
-        aimAngle = -Maths.PointDirection(barrelOffset, target.position + new Vec2(0f, 3f));
+        aimAngle = Maths.PointDirection(target.position + new Vec2(0f, 3f), barrelOffset);
+        if (Math.Abs(aimAngle) - Math.Abs(Maths.RadToDeg(base.angle)) > 45) aimAngle = 0;
+    }
+
+    public override void Draw()
+    {
+        base.Draw();
+        laserSight = loaded && duck != null && Math.Abs(duck.hSpeed) + Math.Abs(duck.vSpeed) <= 0.01f;
     }
 
     public override void OnPressAction()
@@ -66,16 +75,17 @@ public class AWP : Sniper
         float dist = float.MaxValue;
         foreach (Thing t in Level.current.things[typeof(IAmADuck)])
         {
-            if ((t.x < barrelOffset.x && offDir > 0) || (t.x > barrelOffset.x && offDir < 0) || Level.CheckLine<Block>(position, t.position) != null
+            if (/*(t.x < barrelOffset.x && offDir > 0) || (t.x > barrelOffset.x && offDir < 0) || */Level.CheckLine<Block>(position, t.position) != null
                 || t == owner || !(Distance(t) <= _ammoType.range)) continue;
 
             float curDist = (position - t.position).lengthSq;
-            if (curDist < dist)
-            {
-                dist = curDist;
-                if (Duck.GetAssociatedDuck(t) != null && !Duck.GetAssociatedDuck(t).dead && (duck == null || Duck.GetAssociatedDuck(t).team != duck.team))
-                    d = Duck.GetAssociatedDuck(t);
-            }
+            if (curDist >= dist) continue;
+
+            dist = curDist;
+            Duck target = Duck.GetAssociatedDuck(t);
+            if (target != null && !target.dead && (duck == null || FuseTeams.Team(target) == FuseTeams.FuseTeam.None ||
+                                                   FuseTeams.Team(target) != FuseTeams.Team(duck)))
+                d = target;
         }
         return d;
     }

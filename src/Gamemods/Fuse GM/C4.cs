@@ -74,7 +74,6 @@ public class C4 : Holdable
         if (removedFromFall && isServerForObject)
             State = BombState.Defused;
 
-        DevConsole.Log(DrawAction.ToString());
         base.Update();
     }
 
