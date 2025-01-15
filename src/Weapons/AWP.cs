@@ -5,13 +5,14 @@ namespace DuckGame.C44P;
 [EditorGroup("ADGM|Guns")]
 public class AWP : Sniper
 {
-    protected float aimAngle;
+    protected float AimAngle;
+    public StateBinding AimAngleBinding = new("AimAngle");
 
     public override float angle
     {
         get =>
-            owner != null && aimAngle != 0
-                ? Maths.DegToRad(aimAngle - (offDir < 0 ? 180 : 0))
+            owner != null && AimAngle != 0
+                ? Maths.DegToRad(AimAngle - (offDir < 0 ? 180 : 0))
                 : base.angle;
         set => base.angle = value;
     }
@@ -41,12 +42,12 @@ public class AWP : Sniper
     public override void Update()
     {
         base.Update();
-        aimAngle = 0;
+        AimAngle = 0;
         if (!loaded || _loadState != -1 || duck is null || Math.Abs(duck.hSpeed) + Math.Abs(duck.vSpeed) > 0.01f || !duck.grounded) return;
         Duck? target = GetTarget();
         if (target is null) return;
-        aimAngle = Maths.PointDirection(target.position + new Vec2(0f, 3f), barrelOffset);
-        if (Math.Abs(aimAngle) - Math.Abs(Maths.RadToDeg(base.angle)) > 45) aimAngle = 0;
+        float aimAngle = -Maths.PointDirection(position, target.position + new Vec2(0f, 3f));
+        if (Math.Abs(aimAngle) > 135 || Math.Abs(aimAngle) < 45) AimAngle = aimAngle;
     }
 
     public override void Draw()
@@ -75,8 +76,8 @@ public class AWP : Sniper
         float dist = float.MaxValue;
         foreach (Thing t in Level.current.things[typeof(IAmADuck)])
         {
-            if (/*(t.x < barrelOffset.x && offDir > 0) || (t.x > barrelOffset.x && offDir < 0) || */Level.CheckLine<Block>(position, t.position) != null
-                || t == owner || !(Distance(t) <= _ammoType.range)) continue;
+            if ((t.x < x && offDir > 0) || (t.x > x && offDir < 0) || Level.CheckLine<Block>(position, t.position) != null
+                || t == owner) continue;
 
             float curDist = (position - t.position).lengthSq;
             if (curDist >= dist) continue;
@@ -84,7 +85,7 @@ public class AWP : Sniper
             dist = curDist;
             Duck target = Duck.GetAssociatedDuck(t);
             if (target != null && !target.dead && (duck == null || FuseTeams.Team(target) == FuseTeams.FuseTeam.None ||
-                                                   FuseTeams.Team(target) != FuseTeams.Team(duck)))
+                                                   FuseTeams.Team(target) != FuseTeams.Team(duck) || duck.team != target.team))
                 d = target;
         }
         return d;
