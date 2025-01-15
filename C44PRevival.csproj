@@ -33,8 +33,8 @@
   </Target>
 
   <ItemGroup>
-    <Compile Remove="src\Grenades\Flashbang.cs" />
-    <Compile Remove="src\Grenades\Flashlight.cs" />
+    <Compile Remove="src\Weapons\Grenades\Flashbang.cs" />
+    <Compile Remove="src\Weapons\Grenades\Flashlight.cs" />
   </ItemGroup>
 
   <ItemGroup>

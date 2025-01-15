@@ -14,6 +14,16 @@
             DependencyResolver.ResolveDependencies();
             AutoPatchHandler.Patch();
             GMIcons.Initialize();
+            DevConsole.AddCommand(new CMD("resavelevels", delegate ()
+            {
+                if (Level.current is Editor editor)
+                {
+                    editor.Resave($"{ContentPath}Levels/");
+                    DevConsole.Log("Starting resave!", Color.LightGreen);
+                }
+                else
+                    DevConsole.Log("Current level is not Editor!", Color.Red);
+            }));
         }
 	}
 }

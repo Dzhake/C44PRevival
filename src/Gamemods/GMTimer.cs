@@ -2,15 +2,22 @@
 
 namespace DuckGame.C44P;
 
+public enum ProgressBarType
+{
+    Progress,
+    KeyPoint,
+    ScoreCompetition
+}
+
 public class GMTimer : Thing
 {
     protected BitmapFont _font;
-    public string str;
-    public string subtext;
+    public string str = "";
+    public string subtext = "";
 
-    protected float _time; 
-    public float time 
-    { 
+    protected float _time;
+    public float time
+    {
         get => _time;
         set
         {
@@ -31,8 +38,8 @@ public class GMTimer : Thing
     public float progressTarget;
     public ProgressBarType progressBarType = ProgressBarType.Progress;
 
-    protected Sprite redDot;
-    protected Sprite greenDot;
+    protected Sprite? redDot;
+    protected Sprite? greenDot;
 
     public GMTimer(float xpos, float ypos) : base(xpos, ypos)
     {
@@ -117,7 +124,7 @@ public class GMTimer : Thing
         base.Update();
         if (!isTimerActive) return;
         time -= Maths.IncFrameTimer();
-        if (!(time < 0)) return;
+        if (time >= 0) return;
         time = 0;
         isTimerActive = false;
     }
@@ -132,13 +139,13 @@ public class GMTimer : Thing
 
         int mins = (int)time / 60;
         int seconds = (int)time % 60;
-            
-        string text = "";
-        if(str != null && str != "")
+
+        string text;
+        if (!string.IsNullOrEmpty(str))
         {
             text = str;
             Color col = Color.Orange;
-            float xpos = textPos.x - _font.GetWidth(text, false, null) / 2f;
+            float xpos = textPos.x - _font.GetWidth(text) / 2f;
             Graphics.DrawStringOutline(text, new Vec2(xpos, textPos.y), col, Color.Black, 0.9f, null, _font.scale.x);
             return;
         }
@@ -147,7 +154,7 @@ public class GMTimer : Thing
             text += "0";
         text += Convert.ToString(seconds);
 
-        float xposit = textPos.x - _font.GetWidth(text, false, null) / 2f;
+        float xposit = textPos.x - _font.GetWidth(text) / 2f;
 
         Color c = Color.White;
         if ((int)time % 2 == 1 && (int)time < 10)
@@ -155,52 +162,50 @@ public class GMTimer : Thing
             c = Color.Red;
         }
 
-        Graphics.DrawStringOutline(text, new Vec2(xposit, textPos.y), c, Color.Black, 0.9f, null, _font.scale.x); 
-            
+        Graphics.DrawStringOutline(text, new Vec2(xposit, textPos.y), c, Color.Black, 0.9f, null, _font.scale.x);
+
+        Vec2 unit = camSize / new Vec2(320, 180);
         if (!string.IsNullOrEmpty(subtext))
         {
-            Vec2 Unit = camSize / new Vec2(320, 180);
-            textPos += new Vec2(0, 10f) * Unit;
+            textPos += new Vec2(0, 10f) * unit;
             Graphics.DrawStringOutline(subtext, textPos + new Vec2(-4 * subtext.Length, 0) * 0.5f * _font.scale.x, Color.Orange, Color.Black, depth, null, 0.5f * _font.scale.x);
         }
 
-        if (progressBar)
-        {
-            Vec2 Unit = camSize / new Vec2(320, 180);
-            textPos += new Vec2(0, 10f) * Unit;
-            if (progressBarType == ProgressBarType.Progress)
-            {
-                Graphics.DrawRect(textPos + new Vec2(-camSize.x * 0.15f, -2.5f * Unit.y), textPos + new Vec2(camSize.x * 0.15f, 2.5f * Unit.y), Color.White, depth, false, Unit.x * 0.5f);
-                Graphics.DrawRect(textPos + new Vec2(-camSize.x * 0.15f + Unit.x * -0.5f, -3 * Unit.y), textPos + new Vec2(camSize.x * 0.15f + Unit.x * 0.5f, 3f * Unit.y), Color.Black, depth, false, Unit.x * 0.5f);
-                Graphics.DrawRect(textPos + new Vec2(-camSize.x * 0.15f, -2f * Unit.y), textPos + new Vec2(-camSize.x * 0.15f + (progress) * camSize.x * 0.3f, 2f * Unit.y), Color.Yellow, depth, true, Unit.x);
-                Graphics.DrawRect(textPos + new Vec2(-camSize.x * 0.15f, -2f * Unit.y), textPos + new Vec2(-camSize.x * 0.15f + (1) * camSize.x * 0.3f, 2f * Unit.y), Color.DarkRed, depth - 1, true, Unit.x);
-            }
-            if (progressBarType == ProgressBarType.KeyPoint)
-            {
-                if (redDot != null)
-                {
-                    for (int k = 0; k < progressTarget; k++)
-                    {
-                        Sprite circle = redDot;
-                        if(greenDot != null && progress >= k + 1)
-                        {
-                            circle = greenDot;
-                        }
-                        circle.CenterOrigin();
-                        circle.scale = Unit * 0.5f;
-                        circle.depth = depth;
+        if (!progressBar) return;
+        textPos += new Vec2(0, 10f) * unit;
 
-                        Graphics.Draw(circle, textPos.x + (-(progressTarget - 1) * 0.5f + k) * (120 / progressTarget) * Unit.x, textPos.y);
-                    }
-                }
-                else
-                    InitializeDots();
-            }
-            if(progressBarType == ProgressBarType.ScoreCompetition)
+        switch (progressBarType)
+        {
+        case ProgressBarType.Progress:
+            Graphics.DrawRect(textPos + new Vec2(-camSize.x * 0.15f, -2.5f * unit.y), textPos + new Vec2(camSize.x * 0.15f, 2.5f * unit.y), Color.White, depth, false, unit.x * 0.5f);
+            Graphics.DrawRect(textPos + new Vec2(-camSize.x * 0.15f + unit.x * -0.5f, -3 * unit.y), textPos + new Vec2(camSize.x * 0.15f + unit.x * 0.5f, 3f * unit.y), Color.Black, depth, false, unit.x * 0.5f);
+            Graphics.DrawRect(textPos + new Vec2(-camSize.x * 0.15f, -2f * unit.y), textPos + new Vec2(-camSize.x * 0.15f + (progress) * camSize.x * 0.3f, 2f * unit.y), Color.Yellow, depth, true, unit.x);
+            Graphics.DrawRect(textPos + new Vec2(-camSize.x * 0.15f, -2f * unit.y), textPos + new Vec2(-camSize.x * 0.15f + (1) * camSize.x * 0.3f, 2f * unit.y), Color.DarkRed, depth - 1, true, unit.x);
+            break;
+        case ProgressBarType.KeyPoint when redDot is null:
+        {
+            InitializeDots();
+            break;
+        }
+        case ProgressBarType.KeyPoint:
+            for (int k = 0; k < progressTarget; k++)
             {
-                Graphics.DrawLine(textPos + new Vec2(-camSize.x * 0.15f, 0), textPos + new Vec2(camSize.x * 0.15f, 0), Color.White, Unit.x * 0.5f, depth); 
-                Graphics.DrawRect(textPos + new Vec2(-camSize.x * 0.15f - 0.5f * Unit.x, -0.5f * Unit.y), textPos + new Vec2(camSize.x * 0.15f + 0.5f * Unit.x, 0.5f * Unit.y), Color.Black, depth.Add(-1), true, 1);
+                Sprite circle = redDot;
+                if (greenDot != null && progress >= k + 1)
+                {
+                    circle = greenDot;
+                }
+                circle.CenterOrigin();
+                circle.scale = unit * 0.5f;
+                circle.depth = depth;
+
+                Graphics.Draw(circle, textPos.x + (-(progressTarget - 1) * 0.5f + k) * (120 / progressTarget) * unit.x, textPos.y);
             }
+            break;
+        case ProgressBarType.ScoreCompetition:
+            Graphics.DrawLine(textPos + new Vec2(-camSize.x * 0.15f, 0), textPos + new Vec2(camSize.x * 0.15f, 0), Color.White, unit.x * 0.5f, depth);
+            Graphics.DrawRect(textPos + new Vec2(-camSize.x * 0.15f - 0.5f * unit.x, -0.5f * unit.y), textPos + new Vec2(camSize.x * 0.15f + 0.5f * unit.x, 0.5f * unit.y), Color.Black, depth.Add(-1));
+            break;
         }
     }
 }
