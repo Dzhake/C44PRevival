@@ -2,7 +2,7 @@
 
 namespace DuckGame.C44P
 {
-    [EditorGroup("ADGM|GameMode Collect")]
+    [EditorGroup("ADGM|GM Collect")]
     public class CollectibleArmor : Collectible
     {
         public CollectibleArmor(float xpos, float ypos) : base(xpos, ypos)
@@ -12,7 +12,7 @@ namespace DuckGame.C44P
             _editorName = "Armor LootBox";
         }
     }
-    [EditorGroup("ADGM|GameMode Collect")]
+    [EditorGroup("ADGM|GM Collect")]
     public class CollectibleHeavy : Collectible
     {
         public CollectibleHeavy(float xpos, float ypos) : base(xpos, ypos)
@@ -22,7 +22,7 @@ namespace DuckGame.C44P
             _editorName = "Heavy LootBox";
         }
     }
-    [EditorGroup("ADGM|GameMode Collect")]
+    [EditorGroup("ADGM|GM Collect")]
     public class CollectibleLight : Collectible
     {
         public CollectibleLight(float xpos, float ypos) : base(xpos, ypos)
@@ -32,7 +32,7 @@ namespace DuckGame.C44P
             _editorName = "Light LootBox";
         }
     }
-    [EditorGroup("ADGM|GameMode Collect")]
+    [EditorGroup("ADGM|GM Collect")]
     public class Collectible : Holdable, IContainAThing
     {
         private SpriteMap _sprite;
@@ -130,9 +130,7 @@ namespace DuckGame.C44P
         }
         public void SpawnItem()
         {
-            PhysicsObject newThing;
-            newThing = (Editor.CreateThing(contains) as PhysicsObject);
-            if (newThing != null && isSpawn == false)
+            if (Editor.CreateThing(contains) is PhysicsObject newThing && isSpawn == false)
             {
                 newThing.x = x;
                 newThing.y = top + (newThing.y - newThing.bottom) - 6f;

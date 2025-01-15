@@ -8,7 +8,7 @@ using DuckGame;
 namespace DuckGame.C44P
 {
     [BaggedProperty("canSpawn", false)]
-    [EditorGroup("ADGM|GameMode CTF")]
+    [EditorGroup("ADGM|GM CTF")]
     public class FlagBase : Thing
     {
         private SpriteMap _sprite;

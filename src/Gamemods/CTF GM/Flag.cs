@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace DuckGame.C44P
 {
     [BaggedProperty("canSpawn", false)]
-    [EditorGroup("ADGM|GameMode CTF")]
+    [EditorGroup("ADGM|GM CTF")]
     public class Flag : Thing
     {
         public new Duck owner;

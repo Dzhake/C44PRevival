@@ -1,6 +1,6 @@
 ﻿namespace DuckGame.C44P
 {
-    [EditorGroup("ADGM|GameMode CP")]
+    [EditorGroup("ADGM|GM CP")]
     public class ContestZone : Thing
     {
         private SpriteMap _sprite;

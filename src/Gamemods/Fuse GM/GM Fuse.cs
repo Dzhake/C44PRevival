@@ -2,7 +2,7 @@
 
 namespace DuckGame.C44P;
 
-[EditorGroup("ADGM|GameMode Fuse")]
+[EditorGroup("ADGM|GM Fuse")]
 [BaggedProperty("canSpawn", false)]
 public class GM_Fuse : Thing
 {

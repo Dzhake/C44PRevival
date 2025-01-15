@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DuckGame.C44P
 {
-    [EditorGroup("ADGM|GameMode CTF")]
+    [EditorGroup("ADGM|GM CTF")]
     public class GM_CTF : Thing
     {
         private SpriteMap _sprite; 

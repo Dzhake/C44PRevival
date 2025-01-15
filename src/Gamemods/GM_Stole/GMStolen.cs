@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DuckGame.C44P
 {
-    [EditorGroup("ADGM|GameMode ST")]
+    [EditorGroup("ADGM|GM ST")]
     public class GM_STOLEN : Thing
     {
         private SpriteMap _sprite;

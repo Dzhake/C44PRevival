@@ -1,6 +1,6 @@
 ﻿namespace DuckGame.C44P
 {
-    [EditorGroup("ADGM|GameMode Collect")]
+    [EditorGroup("ADGM|GM Collect")]
     public class CollectBase : Thing
     {
         private SpriteMap _sprite;

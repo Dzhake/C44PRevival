@@ -3,7 +3,7 @@
 namespace DuckGame.C44P
 {
     [BaggedProperty("canSpawn", false)]
-    [EditorGroup("ADGM|GameMode ST")]
+    [EditorGroup("ADGM|GM ST")]
     public class ContestSafe : Block, IPlatform
     {
         public SpriteMap _sprite;

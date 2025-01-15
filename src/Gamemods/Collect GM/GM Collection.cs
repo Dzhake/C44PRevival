@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DuckGame.C44P
 {
-    [EditorGroup("ADGM|GameMode Collect")]
+    [EditorGroup("ADGM|GM Collect")]
     public class GM_Collection : Thing
     {
         public GMTimer _timer;
