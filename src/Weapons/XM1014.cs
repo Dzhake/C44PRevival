@@ -20,18 +20,12 @@
 			_collisionSize = new Vec2(16f, 6f);
 			_barrelOffsetTL = new Vec2(30f, 14f);
 			_fireSound = "shotgunFire2";
-			_kickForce = 4f;
+			_kickForce = 3f;
 			_fireRumble = RumbleIntensity.Light;
 			_numBulletsPerFire = 6;
-            _fireWait = 3f;
+            _fireWait = 2;
 			_holdOffset = new Vec2(3f, 1f);
             editorTooltip = "Very fast automatic shotgun. You can spam attack to shoot faster.";
-        }
-
-        public override void OnPressAction()
-        {
-            _wait = 0f;
-            Fire();
         }
 	}
 }
