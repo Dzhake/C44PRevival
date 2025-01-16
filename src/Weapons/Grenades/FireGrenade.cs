@@ -8,7 +8,7 @@ public class FireGrenade : BaseGrenade
     protected float volume = 0.4f;
     public FireGrenade(float xval, float yval) : base(xval, yval)
     {
-        sprite = new SpriteMap(GetPath("Sprites/Items/Weapons/FireGrenade.png"), 16, 16, false);
+        sprite = new SpriteMap($"{C44P.WeaponsPath}FireGrenade", 16, 16);
         _graphic = sprite;
         _center = new Vec2(8f, 8f);
         _collisionOffset = new Vec2(-3f, -5f);
@@ -53,7 +53,7 @@ public class FireGrenade : BaseGrenade
     {
         if (HasPin)
         {
-            Level.Add(new Shell(x, y, GetPath<C44P>("Sprites/Items/Weapons/FireGrenadePin.png"))
+            Level.Add(new GrenadePin(x, y)
             {
                 hSpeed = -offDir * (1.5f + Rando.Float(0.5f)),
                 vSpeed = -2f
