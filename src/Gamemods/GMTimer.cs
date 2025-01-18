@@ -14,6 +14,7 @@ public class GMTimer : Thing
     protected BitmapFont _font;
     public string str = "";
     public string subtext = "";
+    public Color subtextColor = Color.Orange;
 
     protected float _time;
     public float time
@@ -168,7 +169,7 @@ public class GMTimer : Thing
         if (!string.IsNullOrEmpty(subtext))
         {
             textPos += new Vec2(0, 10f) * unit;
-            Graphics.DrawStringOutline(subtext, textPos + new Vec2(-4 * subtext.Length, 0) * 0.5f * _font.scale.x, Color.Orange, Color.Black, depth, null, 0.5f * _font.scale.x);
+            Graphics.DrawStringOutline(subtext, textPos + new Vec2(-4 * subtext.Length, 0) * 0.5f * _font.scale.x, subtextColor, Color.Black, depth, null, 0.5f * _font.scale.x);
         }
 
         if (!progressBar) return;

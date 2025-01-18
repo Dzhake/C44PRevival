@@ -4,11 +4,17 @@ namespace DuckGame.C44P;
 
 [EditorGroup("ADGM|GM Fuse")]
 [BaggedProperty("canSpawn", false)]
-public class C4 : Holdable
+public class C4 : Holdable, IDrawToDifferentLayers
 {
     public enum BombState { Spawned, Planted, Defused, Exploded }
+    protected enum ActionIcon { None, Down, Shoot }
+
+    protected ActionIcon icon;
 
     public NetSoundEffect boopBeepSound;
+    public NetSoundEffect bombdefusedSound;
+    public NetSoundEffect bombplantedSound;
+    public NetSoundEffect DefuseSound;
 
     public bool ZoneOnly;
     public GM_Fuse? GM;
@@ -16,16 +22,18 @@ public class C4 : Holdable
     public BombState State = BombState.Spawned;
     public float ActionTimer;
     public StateBinding ActionTimerBinding = new("ActionTimer");
-    protected bool DrawAction;
-    protected float actionVisibility;
 
     protected Vec2 respawnPos;
 
     public C4(float xval, float yval) : base(xval, yval)
     {
         boopBeepSound = new NetSoundEffect($"{C44P.Soundspath}boopbeep");
-        _weight = 1f;
+        bombdefusedSound = new NetSoundEffect($"{C44P.Soundspath}bombdefused");
+        bombplantedSound = new NetSoundEffect($"{C44P.Soundspath}bombplanted");
+        DefuseSound = new NetSoundEffect($"{C44P.Soundspath}Defuse");
 
+        _weight = 1f;
+        tapeable = false;
         _collisionSize = new Vec2(8f, 10f);
         _collisionOffset = new Vec2(-4f, -6f);
         _center = new Vec2(8f, 6f);
@@ -33,7 +41,6 @@ public class C4 : Holdable
         _graphic = new($"{C44P.SpritesPath}Gamemodes/Fuse/C4");
 
         respawnPos = new(xval, yval);
-        tapeable = false;
     }
 
     public override void Update()
@@ -41,7 +48,7 @@ public class C4 : Holdable
         if (GM is null)
         {
             GM = Level.First<GM_Fuse>();
-            if (GM == default)
+            if (GM is null)
             {
                 Level.Remove(this);
                 return;
@@ -55,19 +62,16 @@ public class C4 : Holdable
 
         switch (State)
         {
-            case BombState.Spawned:
-            {
-                SpawnedLogic();
-                break;
-            }
-            case BombState.Planted:
-            {
-                PlantedLogic();
-                break;
-            }
-            case BombState.Defused:
-                DrawAction = false;
-                break;
+        case BombState.Spawned:
+        {
+            SpawnedLogic();
+            break;
+        }
+        case BombState.Planted:
+        {
+            PlantedLogic();
+            break;
+        }
         }
 
         if (removedFromFall && isServerForObject)
@@ -78,16 +82,31 @@ public class C4 : Holdable
 
     protected void SpawnedLogic()
     {
+        icon = ActionIcon.None;
         canPickUp = true;
         if (duck is null || GM is null) return;
         Duck d = duck;
-        if (d.inputProfile.Released("SHOOT"))
-            ActionTimer = 0f;
 
-        if (!d.crouch || !d.grounded || (ZoneOnly && Level.CheckRect<PlantZone>(topLeft, bottomRight) == null)) return;
+        if (!d.grounded || (ZoneOnly && Level.CheckRect<PlantZone>(topLeft, bottomRight) == null))
+        {
+            ActionTimer = 0;
+            return;
+        }
 
-        DrawAction = true;
-        if (!d.inputProfile.Down("SHOOT")) return;
+        if (!d.crouch)
+        {
+            ActionTimer = 0;
+            icon = ActionIcon.Down;
+            return;
+        }
+
+        icon = ActionIcon.Shoot;
+
+        if (!d.inputProfile.Down("SHOOT"))
+        {
+            ActionTimer = 0;
+            return;
+        }
 
         d._disarmDisable = 5;
         d.hSpeed = 0;
@@ -95,7 +114,7 @@ public class C4 : Holdable
         if (isServerForObject && ActionTimer % 0.3 > 0.02 && ActionTimer % 0.3 < 0.05)
         {
             boopBeepSound.Play();
-            Level.Add(new PlantingButtonGraphic(x, y - 24f));
+            Level.Add(new PlantingButtonGraphic(x, y - 16f));
             d._disarmDisable = 0;
         }
 
@@ -104,50 +123,64 @@ public class C4 : Holdable
 
     protected void PlantedLogic()
     {
-        DrawAction = false;
+        icon = ActionIcon.None;
+        bool defusing = false;
+        bool defuser = false;
+
+        if (Level.current is DeathmatchLevel dml)
+        {
+            Deathmatch? dm = dml._deathmatch;
+            if (dm != null)
+            {
+                dm._matchOver = false;
+                dm._deadTimer = 1f;
+            }
+        }
+
         foreach (Duck d in Level.CheckRectAll<Duck>(new Vec2(position.x - 10f, position.y + 2f),
                      new Vec2(position.x + 10f, position.y - 6f)))
         {
-            if (FuseTeams.Team(d) != FuseTeams.FuseTeam.CT) continue;
-            bool defuser = d.holdObject is Defuser;
-            if (!defuser && d.holdObject is not null) continue;
-            Duck? localDuck = DuckNetwork.localProfile?.duck;
-            if (Level.current is DuckGameTestArea || !Network.isActive) DrawAction = true;
-            if (d == localDuck)
-            {
-                Fondle(this);
-                DrawAction = true;
-            }
+            if (FuseTeams.Team(d) != FuseTeams.FuseTeam.CT || !d.grounded) continue;
+            bool hasDefuser = d.holdObject is Defuser;
+            if (!hasDefuser && d.holdObject is not null) continue;
+            icon = ActionIcon.Shoot;
+            if (!d.inputProfile.Down("SHOOT")) continue;
 
-            if (!d.inputProfile.Down("SHOOT"))
-            {
-                ActionTimer = 0;
-                continue;
-            }
+            defusing = true;
+            defuser = hasDefuser;
+
+            if (Network.isActive && isServerForObject)
+                Fondle(this, d.connection);
+
             d.hSpeed = 0;
-            ActionTimer += Maths.IncFrameTimer() * (defuser ? 2 : 1);
-
-            if (ActionTimer % 0.7 > 0.02 && ActionTimer % 0.7 < 0.05 && ActionTimer < 6)
-            {
-                SFX.Play(GetPath("SFX/Defuse.wav"));
-                //Level.Add(new DefuseFore(position.x, position.y - 6f, 0.5f, (int)ActionTimer));
-            }
-
-
-            if (!(ActionTimer >= 5f)) continue;
-            OnDefuse();
+            break;
         }
+
+        if (!defusing)
+        {
+            ActionTimer = 0;
+            return;
+        }
+
+        ActionTimer += Maths.IncFrameTimer() * (defuser ? 2 : 1);
+
+        if (ActionTimer % 0.7 > 0.02 && ActionTimer % 0.7 < 0.05 && ActionTimer < 5)
+            if (isServerForObject) DefuseSound.Play();
+
+        if (ActionTimer < 5) return;
+        OnDefuse();
     }
 
     public void OnPlant()
     {
+        GM?.OnPlant();
         State = BombState.Planted;
         ActionTimer = 0f;
 
         if (duck is not null) duck.doThrow = true;
         canPickUp = false;
         angleDegrees = 0f;
-        SFX.Play(GetPath("SFX/bombplanted.wav"));
+        if (isServerForObject) bombplantedSound.Play();
 
         if (GM == null) return;
         GM.time = GM.ExplosionTime;
@@ -155,9 +188,11 @@ public class C4 : Holdable
 
     public void OnDefuse()
     {
+        icon = ActionIcon.None;
         State = BombState.Defused;
-        SFX.Play(GetPath("SFX/bombdefused.wav"));
+        if (isServerForObject) bombdefusedSound.Play();
         GM?.OnDefuse();
+        ActionTimer = 0;
     }
 
     public virtual void Explode()
@@ -167,7 +202,8 @@ public class C4 : Holdable
             d.Kill(new DTImpact(this));
 
         Graphics.FlashScreen();
-        SFX.Play("explode");
+
+        Level.Remove(this);
 
         if (!isServerForObject) return;
 
@@ -183,19 +219,17 @@ public class C4 : Holdable
             Level.Add(ins);
         }
     }
-    public override void Draw()
+
+    public void OnDrawLayer(Layer l)
     {
-        base.Draw();
-        actionVisibility = Maths.LerpTowards(actionVisibility, DrawAction ? 1 : 0, DrawAction ? 0.04f : 0.05f);
+        if (l != Layer.Foreground) return;
 
         if (ActionTimer > 0 && State == BombState.Planted)
-            Util.DrawCircle(new (position.x, position.y - 6f), 25, Color.LightGreen, 2f, depth, 50,
-                (int)(ActionTimer * 10));
-        
+            Util.DrawCircle(new(position.x, position.y - 6f), 25, Color.LightGreen, 2f, depth, 50,
+            (int)(ActionTimer * 10));
 
-        if (actionVisibility <= 0) return;
-
-        Graphics.DrawString("@SHOOT@", position + new Vec2(-6, -36), Color.White * actionVisibility);
+        if (icon == ActionIcon.None) return;
+        Graphics.DrawString(icon == ActionIcon.Shoot ? "@SHOOT@" : "@DOWN@", position + new Vec2(-6, -36), Color.White);
     }
 }
 

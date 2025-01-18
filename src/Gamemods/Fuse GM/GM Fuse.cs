@@ -19,11 +19,13 @@ public class GM_Fuse : Thing
     public StateBinding c4Binding = new("c4");
     protected bool _inited;
 
+    public NetSoundEffect TenSecSound;
+
     public GM_Fuse(float xval, float yval) : base(xval, yval)
     {
         FuseTeams.Reset();
-        SpriteMap sprite = new(Mod.GetPath<C44P>("Sprites/Gamemodes/GameMode.png"), 16, 16);
-        _graphic = sprite;
+        TenSecSound = new NetSoundEffect($"{C44P.Soundspath}10sec");
+        _graphic = new($"{C44P.SpritesPath}Gamemodes/GameMode");
         _center = new Vec2(8f, 8f);
         _collisionOffset = new Vec2(-7f, -7f);
         _collisionSize = new Vec2(14f, 14f);
@@ -57,45 +59,36 @@ public class GM_Fuse : Thing
             _inited = true;
         }
 
-        if (time >= 9.97 && time < 10)
-            SFX.Play(GetPath("SFX/10sec.wav"));
+        if (isServerForObject && time >= 9.97 && time < 10)
+            TenSecSound.Play();
 
         if (c4 == null || Level.current is Editor || _timer is null) return;
-
-        switch (c4.State)
-        {
-            case C4.BombState.Planted:
-                _timer.subtext = "Planted";
-                break;
-            case C4.BombState.Spawned:
-                _timer.str = "";
-                break;
-            case C4.BombState.Defused:
-                return;
-        }
 
         switch (time)
         {
             case > 0f:
-                _timer.time = time;
                 time -= Maths.IncFrameTimer();
+                _timer.time = time;
                 if (c4.State == C4.BombState.Planted && time % 1 > 0.02f && time % 1 < 0.05f)
-                    SFX.Play(GetPath("SFX/bombbeep.wav"));
+                    c4.boopBeepSound.Play();
                 break;
             case <= 0f:
                 if (c4.State == C4.BombState.Planted) c4.Explode();
                 Win(c4.State == C4.BombState.Planted ? FuseTeams.FuseTeam.T : FuseTeams.FuseTeam.CT);
-                SFX.Play(GetPath("SFX/GameEnd.wav"));
+                Level.Remove(_timer);
+                Fondle(_timer);
                 break;
         }
+    }
+
+    public void OnPlant()
+    {
+        if (_timer != null) _timer.subtext = "Planted";
     }
 
     public void OnDefuse()
     {
         Win(FuseTeams.FuseTeam.CT);
-        SFX.Play(GetPath("SFX/GameEnd.wav"));
-        Level.Remove(_timer);
-        Fondle(_timer);
     }
 
     public void Win(FuseTeams.FuseTeam team)
@@ -113,7 +106,7 @@ public class GM_Fuse : Thing
 
         bool CTArmorExists = false;
         bool TArmorExists = false;
-        bool C4Placed = false;
+        bool C4Placed =  Level.First<C4>() != null;
 
         foreach (Equipper equipper in Level.current.things[typeof(Equipper)])
             switch (equipper.GetContainedInstance())
@@ -125,9 +118,6 @@ public class GM_Fuse : Thing
                     TArmorExists = true;
                     break;
             }
-
-        if (Level.current.things[typeof(C4)].Any())
-            C4Placed = true;
 
         int row = 0;
         const int yoffset = 16;
@@ -141,7 +131,7 @@ public class GM_Fuse : Thing
         GMIcons.Warn.scale = GMIcons.On.scale = GMIcons.Off.scale = new Vec2(unit, unit) * 0.5f;
         Sprite on = GMIcons.On;
         Sprite off = GMIcons.Off;
-        Sprite warn = GMIcons.Warn;
+        //Sprite warn = GMIcons.Warn;
 
         string text = "CT Armor equipper";
         Graphics.DrawString(text, Level.current.camera.position + new Vec2(xoffset, yoffset) * unit, Color.White, depth, null, unit);
@@ -163,7 +153,7 @@ public class GM_Fuse : Thing
 
         if (PlantZones)
         {
-            bool isTherePlantZones = Level.current.things[typeof(PlantZone)].Any();
+            bool isTherePlantZones = Level.First<PlantZone>() != null;
 
             row++;
             text = "Plant zone setted up";
@@ -173,13 +163,13 @@ public class GM_Fuse : Thing
                 Level.current.camera.position.y + (row * yMove + yoffset + spriteYOffset) * unit);
         }
 
-        if (!Level.current.things[typeof(Defuser)].Any())
+        /*if (!Level.current.things[typeof(Defuser)].Any())
         {
             row++;
             text = "Defuser not placed";
             Graphics.DrawString(text, Level.current.camera.position + new Vec2(xoffset, row * yMove + yoffset) * unit, Color.White, depth, null, unit);
             Graphics.Draw(warn, Level.current.camera.position.x + xoffset * 0.5f * unit, Level.current.camera.position.y + (row * yMove + yoffset + spriteYOffset) * unit);
-        }
+        }*/
     }
 }
 
