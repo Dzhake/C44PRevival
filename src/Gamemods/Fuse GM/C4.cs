@@ -225,7 +225,7 @@ public class C4 : Holdable, IDrawToDifferentLayers
         if (l != Layer.Foreground) return;
 
         if (icon != ActionIcon.None)
-            Graphics.DrawString(icon == ActionIcon.Shoot ? "@SHOOT@" : "@DOWN@", position + new Vec2(-6, -36), Color.White);
+            Graphics.DrawString(icon == ActionIcon.Shoot ? "@SHOOT@" : "@DOWN@", position + new Vec2(-6, -36), Color.White, depth.value + 0.2f);
 
         if (ActionTimer <= 0 || State != BombState.Planted) return;
         Vec2 pos = new(position.x, position.y - 6f);
