@@ -23,7 +23,7 @@ public class C4 : Holdable, IDrawToDifferentLayers
     public float ActionTimer;
     public StateBinding ActionTimerBinding = new("ActionTimer");
 
-    protected Vec2 respawnPos;
+    protected Vec2? respawnPos;
 
     public C4(float xval, float yval) : base(xval, yval)
     {
@@ -34,17 +34,16 @@ public class C4 : Holdable, IDrawToDifferentLayers
 
         _weight = 1f;
         tapeable = false;
-        _collisionSize = new Vec2(8f, 10f);
-        _collisionOffset = new Vec2(-4f, -6f);
+        _collisionSize = new Vec2(14f, 10f);
+        _collisionOffset = new Vec2(-7f, -6f);
         _center = new Vec2(8f, 6f);
 
         _graphic = new($"{C44P.SpritesPath}Gamemodes/Fuse/C4");
-
-        respawnPos = new(xval, yval);
     }
 
     public override void Update()
     {
+        respawnPos ??= position;
         if (GM is null)
         {
             GM = Level.First<GM_Fuse>();
@@ -58,7 +57,7 @@ public class C4 : Holdable, IDrawToDifferentLayers
         }
 
         if (position.y > Level.current.lowestPoint + 400f && State == BombState.Spawned)
-            position = respawnPos;
+            position = (Vec2)respawnPos;
 
         switch (State)
         {
@@ -214,8 +213,7 @@ public class C4 : Holdable, IDrawToDifferentLayers
         {
             float dir = i * 60f + Rando.Float(-10f, 10f);
             float dist = Rando.Float(20f, 20f);
-            ExplosionPart ins = new(position.x + (float)(Math.Cos(Maths.DegToRad(dir)) * dist), position.y -
-                (float)(Math.Sin(Maths.DegToRad(dir)) * dist));
+            ExplosionPart ins = new(position.x + (float)(Math.Cos(Maths.DegToRad(dir)) * dist), position.y - (float)(Math.Sin(Maths.DegToRad(dir)) * dist));
             Level.Add(ins);
         }
     }
@@ -225,7 +223,7 @@ public class C4 : Holdable, IDrawToDifferentLayers
         if (l != Layer.Foreground) return;
 
         if (icon != ActionIcon.None)
-            Graphics.DrawString(icon == ActionIcon.Shoot ? "@SHOOT@" : "@DOWN@", position + new Vec2(-6, -36), Color.White, depth.value + 0.2f);
+            Graphics.DrawString(icon == ActionIcon.Shoot ? "@SHOOT@" : "@DOWN@", position + new Vec2(-6, -36), Color.White, depth.value - 0.2f);
 
         if (ActionTimer <= 0 || State != BombState.Planted) return;
         Vec2 pos = new(position.x, position.y - 6f);

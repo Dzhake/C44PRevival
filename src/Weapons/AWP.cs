@@ -42,12 +42,13 @@ public class AWP : Sniper
     public override void Update()
     {
         base.Update();
+        if (Network.isActive && !isServerForObject) return;
         AimAngle = 0;
         if (!loaded || _loadState != -1 || duck is null || Math.Abs(duck.hSpeed) + Math.Abs(duck.vSpeed) > 0.01f || !duck.grounded) return;
         Duck? target = GetTarget();
         if (target is null) return;
         float aimAngle = -Maths.PointDirection(position, target.position + new Vec2(0f, 3f));
-        if (Math.Abs(180 - Math.Abs(aimAngle)) < 175) AimAngle = aimAngle;
+        if (Math.Abs(Math.Abs(Math.Abs(aimAngle) - 90) - 90) <= 5) AimAngle = aimAngle; //enjoy this unreadable but a bit more optimized thingie :)
     }
 
     public override void Draw()
@@ -72,18 +73,19 @@ public class AWP : Sniper
 
     public Duck? GetTarget()
     {
+        if (duck is null) return null;
         Duck? d = null;
         float dist = float.MaxValue;
         foreach (Thing t in Level.current.things[typeof(IAmADuck)])
         {
-            if ((t.x < x && offDir > 0) || (t.x > x && offDir < 0) || Level.CheckLine<Block>(position + (barrelOffset * offDir), t.position) != null || t == owner) continue;
+            if ((t.x < x && offDir > 0) || (t.x > x && offDir < 0) || Level.CheckLine<Block>(position, t.position) is not null || t == owner) continue;
 
             float curDist = (position - t.position).lengthSq;
             if (curDist >= dist) continue;
 
             Duck target = Duck.GetAssociatedDuck(t);
 
-            if (target is null || target.dead || (duck != null && FuseTeams.Team(target) != FuseTeams.FuseTeam.None && (FuseTeams.Team(target) == FuseTeams.Team(duck) || duck.team == target.team))) continue;
+            if (target is null || target.dead || (FuseTeams.Team(target) != FuseTeams.FuseTeam.None && FuseTeams.Team(target) == FuseTeams.Team(duck)) || duck.team == target.team) continue;
             d = target;
             dist = curDist;
         }
