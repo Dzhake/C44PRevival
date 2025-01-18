@@ -6,7 +6,7 @@ public abstract class BaseGrenade : Gun
     public StateBinding HasPinBinding = new("HasPin");
     public bool HasPin = true;
     public float Timer;
-    protected SpriteMap sprite;
+    protected SpriteMap? sprite;
     public bool HasExploded
     {
         get;
@@ -28,6 +28,7 @@ public abstract class BaseGrenade : Gun
     public override void OnPressAction()
     {
         HasPin = false;
+        holsterable = false;
     }
 
     public override void Update()
@@ -49,7 +50,7 @@ public abstract class BaseGrenade : Gun
 
     protected virtual void UpdateFrame()
     {
-        sprite.frame = HasPin ? 0 : 1;
+        if (sprite != null) sprite.frame = HasPin ? 0 : 1;
     }
 
     //why the hell EjectedShell is abstract..

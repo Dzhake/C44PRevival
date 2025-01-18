@@ -47,7 +47,7 @@ public class AWP : Sniper
         Duck? target = GetTarget();
         if (target is null) return;
         float aimAngle = -Maths.PointDirection(position, target.position + new Vec2(0f, 3f));
-        if (Math.Abs(aimAngle) > 175 || Math.Abs(aimAngle) < 5) AimAngle = aimAngle;
+        if (Math.Abs(180 - Math.Abs(aimAngle)) < 175) AimAngle = aimAngle;
     }
 
     public override void Draw()
@@ -76,17 +76,16 @@ public class AWP : Sniper
         float dist = float.MaxValue;
         foreach (Thing t in Level.current.things[typeof(IAmADuck)])
         {
-            if ((t.x < x && offDir > 0) || (t.x > x && offDir < 0) || Level.CheckLine<Block>(position, t.position) != null
-                || t == owner) continue;
+            if ((t.x < x && offDir > 0) || (t.x > x && offDir < 0) || Level.CheckLine<Block>(position + (barrelOffset * offDir), t.position) != null || t == owner) continue;
 
             float curDist = (position - t.position).lengthSq;
             if (curDist >= dist) continue;
 
-            dist = curDist;
             Duck target = Duck.GetAssociatedDuck(t);
-            if (target != null && !target.dead && (duck == null || FuseTeams.Team(target) == FuseTeams.FuseTeam.None ||
-                                                   FuseTeams.Team(target) != FuseTeams.Team(duck) || duck.team != target.team))
-                d = target;
+
+            if (target is null || target.dead || (duck != null && FuseTeams.Team(target) != FuseTeams.FuseTeam.None && (FuseTeams.Team(target) == FuseTeams.Team(duck) || duck.team == target.team))) continue;
+            d = target;
+            dist = curDist;
         }
         return d;
     }

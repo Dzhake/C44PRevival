@@ -52,13 +52,11 @@ public class FireGrenade : BaseGrenade
     public override void OnPressAction()
     {
         if (HasPin)
-        {
             Level.Add(new GrenadePin(x, y)
             {
                 hSpeed = -offDir * (1.5f + Rando.Float(0.5f)),
                 vSpeed = -2f
             });
-        }
         base.OnPressAction();
     }
 }
