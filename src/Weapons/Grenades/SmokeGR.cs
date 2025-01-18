@@ -22,8 +22,8 @@ public class SmokeGR : Thing
         scaleDecrement = Rando.Float(0.001f, 0.002f);
         move = new Vec2(Rando.Float(-0.03f, 0.03f), Rando.Float(-0.03f, 0.03f));
 
-        GraphicList graphicList = new GraphicList();
-        Sprite graphic1 = new Sprite("smoke", 0.0f, 0.0f)
+        GraphicList graphicList = new();
+        Sprite graphic1 = new("smoke")
         {
             alpha = 1f,
             depth = 1f
@@ -31,7 +31,7 @@ public class SmokeGR : Thing
         graphic1.CenterOrigin();
         graphicList.Add(graphic1);
 
-        Sprite graphic2 = new Sprite("smokeBack", 0.0f, 0.0f)
+        Sprite graphic2 = new("smokeBack")
         {
             depth = 0.1f,
             alpha = 1f
@@ -40,7 +40,7 @@ public class SmokeGR : Thing
         graphicList.Add(graphic2);
 
         _graphic = graphicList;
-        _center = new Vec2(0.0f, 0.0f);
+        _center = new Vec2(0, 0);
         depth = 1f;
     }
 
@@ -48,10 +48,11 @@ public class SmokeGR : Thing
     {
         angle += angleIncrement;
 
+        foreach (MaterialThing t in Level.CheckRectAll<MaterialThing>(position, position + new Vec2(44, 42)))
+            t.Extinquish();
+
         if (Timer > 0)
-        {
             Timer -= 0.01f;
-        }
         else
         {
             xscale -= scaleDecrement;
