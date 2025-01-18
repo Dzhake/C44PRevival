@@ -72,8 +72,8 @@ public class GM_Fuse : Thing
                     c4.boopBeepSound.Play();
                 break;
             case <= 0f:
-                if (c4.State == C4.BombState.Planted) c4.Explode();
                 Win(c4.State == C4.BombState.Planted ? FuseTeams.FuseTeam.T : FuseTeams.FuseTeam.CT);
+                if (c4.State == C4.BombState.Planted) c4.Explode();
                 Level.Remove(_timer);
                 Fondle(_timer);
                 break;
@@ -87,6 +87,8 @@ public class GM_Fuse : Thing
 
     public void OnDefuse()
     {
+        Level.Remove(_timer);
+        Fondle(_timer);
         Win(FuseTeams.FuseTeam.CT);
     }
 
