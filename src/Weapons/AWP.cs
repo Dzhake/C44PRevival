@@ -47,7 +47,7 @@ public class AWP : Sniper
         Duck? target = GetTarget();
         if (target is null) return;
         float aimAngle = -Maths.PointDirection(position, target.position + new Vec2(0f, 3f));
-        if (Math.Abs(aimAngle) > 135 || Math.Abs(aimAngle) < 45) AimAngle = aimAngle;
+        if (Math.Abs(aimAngle) > 175 || Math.Abs(aimAngle) < 5) AimAngle = aimAngle;
     }
 
     public override void Draw()

@@ -57,7 +57,7 @@ public class C4 : Holdable, IDrawToDifferentLayers
             ZoneOnly = GM.PlantZones;
         }
 
-        if (position.y > Level.current.lowestPoint + 400f)
+        if (position.y > Level.current.lowestPoint + 400f && State == BombState.Spawned)
             position = respawnPos;
 
         switch (State)

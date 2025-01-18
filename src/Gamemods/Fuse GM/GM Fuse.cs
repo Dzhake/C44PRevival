@@ -37,7 +37,6 @@ public class GM_Fuse : Thing
 
         _editorName = "GM Fuse";
         editorTooltip = "Inactive bomb spawns instead of this block.";
-        maxPlaceable = 1;
     }
 
     public override void Update()
