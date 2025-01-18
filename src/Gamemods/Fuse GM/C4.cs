@@ -224,12 +224,13 @@ public class C4 : Holdable, IDrawToDifferentLayers
     {
         if (l != Layer.Foreground) return;
 
-        if (ActionTimer > 0 && State == BombState.Planted)
-            Util.DrawCircle(new(position.x, position.y - 6f), 25, Color.LightGreen, 2f, depth, 50,
-            (int)(ActionTimer * 10));
+        if (icon != ActionIcon.None)
+            Graphics.DrawString(icon == ActionIcon.Shoot ? "@SHOOT@" : "@DOWN@", position + new Vec2(-6, -36), Color.White);
 
-        if (icon == ActionIcon.None) return;
-        Graphics.DrawString(icon == ActionIcon.Shoot ? "@SHOOT@" : "@DOWN@", position + new Vec2(-6, -36), Color.White);
+        if (ActionTimer <= 0 || State != BombState.Planted) return;
+        Vec2 pos = new(position.x, position.y - 6f);
+        Graphics.DrawCircle(pos, 25, Color.Black, 3f, depth.value - 0.1f, 50);
+        Util.DrawCircle(pos, 25, Color.LightGreen, 2f, depth, 50, (int)(ActionTimer * 10));
     }
 }
 
