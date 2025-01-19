@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Harmony;
 
 namespace DuckGame.C44P;
 
@@ -47,7 +50,14 @@ public class AWP : Sniper
         if (!loaded || _loadState != -1 || duck is null || Math.Abs(duck.hSpeed) + Math.Abs(duck.vSpeed) > 0.01f || !duck.grounded) return;
         Duck? target = GetTarget();
         if (target is null) return;
-        float aimAngle = -Maths.PointDirection(position, target.position + new Vec2(0f, 3f));
+        Thing t;
+        if (target.ragdoll != null)
+            t = target.ragdoll;
+        else if (target._trapped != null)
+            t = target._trapped;
+        else
+            t = target;
+        float aimAngle = -Maths.PointDirection(position, t.position + new Vec2(0f, 3f));
         if (Math.Abs(Math.Abs(Math.Abs(aimAngle) - 90) - 90) <= 5) AimAngle = aimAngle; //enjoy this unreadable but a bit more optimized thingie :)
     }
 
@@ -55,6 +65,10 @@ public class AWP : Sniper
     {
         base.Draw();
         laserSight = loaded && duck != null && Math.Abs(duck.hSpeed) + Math.Abs(duck.vSpeed) <= 0.01f;
+        if (!C44P.awpdebug) return;
+        Duck? t = GetTarget();
+        if (t is null) return;
+        Graphics.DrawLine(position, t.position, Color.Red);
     }
 
     public override void OnPressAction()
@@ -85,7 +99,7 @@ public class AWP : Sniper
 
             Duck target = Duck.GetAssociatedDuck(t);
 
-            if (target is null || target.dead || (FuseTeams.Team(target) != FuseTeams.FuseTeam.None && FuseTeams.Team(target) == FuseTeams.Team(duck)) || duck.team == target.team) continue;
+            if (target is null || target.dead || (FuseTeams.Team(duck) != FuseTeams.FuseTeam.None && FuseTeams.Team(target) == FuseTeams.Team(duck)) || duck.team == target.team || Level.CheckLine<Block>(position, target.position) is not null) continue;
             d = target;
             dist = curDist;
         }

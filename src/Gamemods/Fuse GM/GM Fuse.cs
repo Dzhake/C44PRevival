@@ -19,12 +19,11 @@ public class GM_Fuse : Thing
     public StateBinding c4Binding = new("c4");
     protected bool _inited;
 
-    public NetSoundEffect TenSecSound;
+    public static readonly string TenSecSound = $"{C44P.Soundspath}10sec";
 
     public GM_Fuse(float xval, float yval) : base(xval, yval)
     {
         FuseTeams.Reset();
-        TenSecSound = new NetSoundEffect($"{C44P.Soundspath}10sec");
         _graphic = new($"{C44P.SpritesPath}Gamemodes/GameMode");
         _center = new Vec2(8f, 8f);
         _collisionOffset = new Vec2(-7f, -7f);
@@ -59,9 +58,9 @@ public class GM_Fuse : Thing
         }
 
         if (isServerForObject && time >= 9.97 && time < 10)
-            TenSecSound.Play();
+            SFX.PlaySynchronized(TenSecSound);
 
-        if (c4 == null || Level.current is Editor || _timer is null) return;
+        if (c4 == null || Level.current is Editor || _timer is null || !FuseTeams.DucksInTeam(FuseTeams.FuseTeam.CT).Any()) return;
 
         switch (time)
         {
@@ -69,7 +68,7 @@ public class GM_Fuse : Thing
                 time -= Maths.IncFrameTimer();
                 _timer.time = time;
                 if (c4.State == C4.BombState.Planted && time % 1 > 0.02f && time % 1 < 0.05f)
-                    c4.boopBeepSound.Play();
+                    SFX.PlaySynchronized(C4.boopBeepSound);
                 break;
             case <= 0f:
                 Win(c4.State == C4.BombState.Planted ? FuseTeams.FuseTeam.T : FuseTeams.FuseTeam.CT);

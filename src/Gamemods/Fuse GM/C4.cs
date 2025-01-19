@@ -11,10 +11,10 @@ public class C4 : Holdable, IDrawToDifferentLayers
 
     protected ActionIcon icon;
 
-    public NetSoundEffect boopBeepSound;
-    public NetSoundEffect bombdefusedSound;
-    public NetSoundEffect bombplantedSound;
-    public NetSoundEffect DefuseSound;
+    public static readonly string boopBeepSound = $"{C44P.Soundspath}boopBeep";
+    public static readonly string bombdefusedSound = $"{C44P.Soundspath}bombdefused";
+    public static readonly string bombplantedSound = $"{C44P.Soundspath}bombplanted";
+    public static readonly string defuseSound = $"{C44P.Soundspath}Defuse";
 
     public bool ZoneOnly;
     public GM_Fuse? GM;
@@ -27,11 +27,6 @@ public class C4 : Holdable, IDrawToDifferentLayers
 
     public C4(float xval, float yval) : base(xval, yval)
     {
-        boopBeepSound = new NetSoundEffect($"{C44P.Soundspath}boopbeep");
-        bombdefusedSound = new NetSoundEffect($"{C44P.Soundspath}bombdefused");
-        bombplantedSound = new NetSoundEffect($"{C44P.Soundspath}bombplanted");
-        DefuseSound = new NetSoundEffect($"{C44P.Soundspath}Defuse");
-
         _weight = 1f;
         tapeable = false;
         _collisionSize = new Vec2(14f, 10f);
@@ -112,7 +107,7 @@ public class C4 : Holdable, IDrawToDifferentLayers
         ActionTimer += Maths.IncFrameTimer();
         if (isServerForObject && ActionTimer % 0.3 > 0.02 && ActionTimer % 0.3 < 0.05)
         {
-            boopBeepSound.Play();
+            SFX.PlaySynchronized(boopBeepSound);
             Level.Add(new PlantingButtonGraphic(x, y - 16f));
             d._disarmDisable = 0;
         }
@@ -126,14 +121,23 @@ public class C4 : Holdable, IDrawToDifferentLayers
         bool defusing = false;
         bool defuser = false;
 
-        if (Level.current is DeathmatchLevel dml)
+        switch (Level.current)
         {
-            Deathmatch? dm = dml._deathmatch;
-            if (dm != null)
+            case DeathmatchLevel dml:
             {
-                dm._matchOver = false;
-                dm._deadTimer = 1f;
+                Deathmatch? dm = dml._deathmatch;
+                if (dm != null)
+                {
+                    dm._matchOver = false;
+                    dm._deadTimer = 1f;
+                }
+
+                break;
             }
+            case GameLevel gl:
+                gl._mode._matchOver = false;
+                gl._mode._roundEndWait = 1f;
+                break;
         }
 
         foreach (Duck d in Level.CheckRectAll<Duck>(new Vec2(position.x - 10f, position.y + 2f),
@@ -164,7 +168,7 @@ public class C4 : Holdable, IDrawToDifferentLayers
         ActionTimer += Maths.IncFrameTimer() * (defuser ? 2 : 1);
 
         if (ActionTimer % 0.7 > 0.02 && ActionTimer % 0.7 < 0.05 && ActionTimer < 5)
-            if (isServerForObject) DefuseSound.Play();
+            if (isServerForObject) SFX.PlaySynchronized(defuseSound);
 
         if (ActionTimer < 5) return;
         OnDefuse();
@@ -179,7 +183,7 @@ public class C4 : Holdable, IDrawToDifferentLayers
         if (duck is not null) duck.doThrow = true;
         canPickUp = false;
         angleDegrees = 0f;
-        if (isServerForObject) bombplantedSound.Play();
+        if (isServerForObject) SFX.PlaySynchronized(bombplantedSound);
 
         if (GM == null) return;
         GM.time = GM.ExplosionTime;
@@ -189,7 +193,7 @@ public class C4 : Holdable, IDrawToDifferentLayers
     {
         icon = ActionIcon.None;
         State = BombState.Defused;
-        if (isServerForObject) bombdefusedSound.Play();
+        if (isServerForObject) SFX.PlaySynchronized(bombdefusedSound);
         GM?.OnDefuse();
         ActionTimer = 0;
     }

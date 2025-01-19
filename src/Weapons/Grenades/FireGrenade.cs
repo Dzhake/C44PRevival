@@ -8,11 +8,11 @@ public class FireGrenade : BaseGrenade
     protected float volume = 0.4f;
     public FireGrenade(float xval, float yval) : base(xval, yval)
     {
-        sprite = new SpriteMap($"{C44P.WeaponsPath}FireGrenade", 16, 16);
+        sprite = new SpriteMap($"{C44P.WeaponsPath}FireGrenade", 8, 13);
         _graphic = sprite;
-        _center = new Vec2(8f, 8f);
-        _collisionOffset = new Vec2(-3f, -5f);
-        _collisionSize = new Vec2(6f, 10f);
+        _center = new Vec2(3, 6);
+        _collisionOffset = new Vec2(-3, -6);
+        _collisionSize = new Vec2(8, 13);
         Timer = 2f;
         bouncy = 0.4f;
         friction = 0.05f;
@@ -41,17 +41,24 @@ public class FireGrenade : BaseGrenade
             Spark spark = Spark.New(position.x, position.y, new Vec2(Rando.Float(-2, 2), Rando.Float(-3, -4)), 0.002f);
             Level.Add(spark);
         }
+        Fondle(_stream);
+    }
+
+    public override void Update()
+    {
+        if (!HasPin && grounded) Explode();
+        base.Update();
     }
 
     public override void Explode()
     {
-        PourOut();
+        if (isServerForObject) PourOut();
         Level.Remove(this);
     }
 
     public override void OnPressAction()
     {
-        if (HasPin)
+        if (HasPin && isServerForObject)
             Level.Add(new GrenadePin(x, y)
             {
                 hSpeed = -offDir * (1.5f + Rando.Float(0.5f)),

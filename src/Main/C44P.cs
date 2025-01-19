@@ -8,6 +8,8 @@
         public static readonly string WeaponsPath = $"{SpritesPath}Items/Weapons/";
         public static readonly string TilesetsPath = $"{SpritesPath}Tilesets/";
 
+        public static bool awpdebug;
+
         public override void OnPostInitialize()
         {
             base.OnPostInitialize();
@@ -23,6 +25,12 @@
                 }
                 else
                     DevConsole.Log("Current level is not Editor!", Color.Red);
+            }));
+
+            DevConsole.AddCommand(new CMD("awpdebug", delegate ()
+            {
+                awpdebug = !awpdebug;
+                DevConsole.Log($"AWP Debug is now {(awpdebug ? "on" : "off")}.", Color.LightGreen);
             }));
         }
 	}
